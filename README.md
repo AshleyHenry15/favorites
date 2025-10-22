@@ -19,8 +19,8 @@ format:
   html:
     theme: cosmo
 
-filters:
-  - favorites
+#filters:
+ # - favorites
 ```
 
 ## Usage
