@@ -4,7 +4,10 @@ A Quarto extension that allows users to favorite pages in your website and displ
 
 ## Installation
 
-1. Copy the entire `_extensions/favorites` folder to your Quarto project's `_extensions` directory.
+1. Copy the entire `_extensions/favorites` folder to your Quarto project's `_extensions` directory or install using:
+  ```
+  quarto add ashleyhenry15/favorites
+  ```
 
 2. Add the extension to your `_quarto.yml`:
 
