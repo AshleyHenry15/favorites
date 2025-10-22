@@ -1,0 +1,15 @@
+title: Favorites
+author: Your Name
+version: 1.0.0
+quarto-required: ">=1.2.0"
+contributes:
+  formats:
+    html:
+      include-in-header:
+        - favorites.html
+      resources:
+        - favorites.js
+        - favorites.css
+  shortcodes:
+    - favorites-button.lua
+    - favorites-list.lua
