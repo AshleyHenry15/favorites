@@ -14,17 +14,4 @@ contributes:
         - favorites.js
   shortcodes:
     - favorites-button.lua
-    - favorites-list.luatitle: Favorites
-author: Your Name
-version: 1.0.0
-quarto-required: ">=1.2.0"
-contributes:
-  formats:
-    html:
-      include-after-body:
-        - favorites.html
-      css:
-        - favorites.css
-  shortcodes:
-    - favorites-button.lua
     - favorites-list.lua
