@@ -1,40 +1,24 @@
-/* Demo site styles */
+/* Custom styles for the favorites extension */
 
-.navbar {
-  padding: 0.5rem 1rem;
+/* Minimal styling for navbar heart icon to ensure it inherits colors */
+.navbar .bi-heart-fill {
+  /* Color is inherited automatically */
+  font-size: 1.1rem; /* Slightly larger icon */
+  vertical-align: -2px; /* Align with text better */
 }
 
-.content-container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-/* Custom styles for the favorites demo */
-.demo-section {
-  margin: 2rem 0;
-  padding: 1.5rem;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
-  background-color: #f8f9fa;
-}
-
-.demo-section h3 {
-  margin-top: 0;
-}
-
-/* Overrides for the extension */
-.favorites-button-container {
-  /* Move the button to fit better with the navbar */
-  top: 15px;
-  right: 15px;
+/* Fix alignment issues with the navbar item */
+.navbar .nav-link {
+  display: flex;
+  align-items: center;
 }
 
 /* Add tooltip to the heart icon in navbar */
-.navbar-nav-scroll .nav-link[aria-label="Favorites"] {
+.navbar-nav-scroll .nav-link[aria-label="My Favorites"] {
   position: relative;
 }
 
-.navbar-nav-scroll .nav-link[aria-label="Favorites"]:hover::after {
+.navbar-nav-scroll .nav-link[aria-label="My Favorites"]:hover::after {
   content: "My Favorites";
   position: absolute;
   bottom: -25px;

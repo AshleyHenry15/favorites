@@ -86,15 +86,11 @@ function setupFavoritesButton() {
 
 // Update the favorite button appearance
 function updateFavoriteButton(button, isFavorited) {
-  const iconSpan = button.querySelector('.favorites-icon');
-
   if (isFavorited) {
     button.classList.add('favorited');
-    iconSpan.textContent = '❤'; // Filled heart
     button.title = 'Remove from Favorites';
   } else {
     button.classList.remove('favorited');
-    iconSpan.textContent = '♡'; // Empty heart
     button.title = 'Add to Favorites';
   }
 }
