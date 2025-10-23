@@ -1,145 +1,60 @@
 # Quarto Favorites Extension
 
-A Quarto extension that allows users to favorite pages in your website and displays a persistent favorites list.
+A Quarto extension that allows users to "favorite" pages in a Quarto website. Favorites are saved to the browser's localStorage and persist across sessions.
 
 ## Installation
 
-1. Copy the entire `_extensions/favorites` folder to your Quarto project's `_extensions` directory or install using:
-  ```
-  quarto add ashleyhenry15/favorites
-  ```
+You can install this extension in your Quarto project by using the following command:
 
-2. Add the extension to your `_quarto.yml`:
-
-```yaml
-project:
-  type: website
-
-website:
-  title: "My Website"
-  
-format:
-  html:
-    theme: cosmo
-
-#filters:
- # - favorites
+```bash
+quarto add AshleyHenry15/favorites
 ```
+
+This will install the extension under the `_extensions` directory.
 
 ## Usage
 
-### Adding a Favorite Button
+### Adding Favorites Button to Pages
 
-To add a favorite button to any page, use the `favorites-button` shortcode:
+Once the extension is installed, a favorites button (heart icon) will automatically appear on the top right corner of every page in your Quarto website.
 
-```markdown
-{{< favorites-button >}}
-```
-
-You can customize the button text:
-
-```markdown
-{{< favorites-button text="Save this page" >}}
-```
-
-**Tip**: Add this to your page template or in the sidebar for consistent placement across all pages.
+Users can click on this button to add or remove the current page from their favorites. When a page is added to favorites, the heart icon turns red.
 
 ### Creating a Favorites Page
 
-Create a dedicated favorites page (e.g., `favorites.qmd`):
-
-```markdown
----
-title: "My Favorites"
----
-
-Here are your favorited pages:
-
-{{< favorites-list >}}
-```
-
-The favorites list will automatically display all pages the user has favorited.
-
-## Example Setup
-
-### 1. Add to Navigation (in `_quarto.yml`)
+To create a dedicated page that displays all favorited pages, create a new Quarto document (e.g., `favorites.qmd`) with the following YAML front matter:
 
 ```yaml
-website:
-  title: "My Website"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - href: about.qmd
-        text: About
-      - href: favorites.qmd
-        text: "⭐ Favorites"
+---
+title: "My Favorites"
+favorites_list: true
+---
+
+This page displays all your favorited pages from this website.
 ```
 
-### 2. Add Button to Pages
-
-In your regular content pages:
-
-```markdown
----
-title: "My Article"
----
-
-{{< favorites-button >}}
-
-## Content
-
-Your article content here...
-```
-
-### 3. Create Favorites Page (`favorites.qmd`)
-
-```markdown
----
-title: "My Favorite Pages"
----
-
-Keep track of interesting pages you've visited:
-
-{{< favorites-list >}}
-```
-
-## Features
-
-- **Persistent Storage**: Favorites are stored in the browser's localStorage and persist across sessions
-- **Visual Feedback**: Button changes appearance when a page is favorited
-- **Toast Notifications**: Users get immediate feedback when adding/removing favorites
-- **Responsive Design**: Works on desktop and mobile devices
-- **Dark Mode Support**: Automatically adapts to light/dark themes
-- **Easy Removal**: Remove favorites directly from the favorites list
-
-## Browser Compatibility
-
-This extension uses localStorage, which is supported in all modern browsers. Users need to have JavaScript enabled for the extension to work.
+The `favorites_list: true` parameter tells the extension to display the favorites list on this page.
 
 ## Customization
 
-You can customize the appearance by modifying `favorites.css` in the extension directory. The main classes are:
+You can customize the appearance of the favorites button and list by adding custom CSS rules to your Quarto project.
 
-- `.favorite-button` - The favorite button
-- `.favorite-item` - Individual items in the favorites list
-- `.favorite-feedback` - The toast notification
+## Browser Compatibility
 
-## Tips
+This extension uses the browser's localStorage API to store favorites, which is supported by all modern browsers. Favorites are saved per browser per device, so if a user switches browsers or devices, their favorites will not be transferred.
 
-1. **Placement**: Consider adding the favorite button in a consistent location across your site (header, sidebar, or at the top of content)
-2. **Promotion**: Mention the favorites feature in your site's introduction or help section
-3. **Clear Labels**: Use descriptive page titles as they appear in the favorites list
+## How It Works
 
-## Troubleshooting
+The extension uses browser localStorage to store the user's favorites as a JSON array. This allows the favorites to persist even after the browser is closed.
 
-**Favorites not persisting**: Ensure JavaScript is enabled and localStorage is available in the browser.
+The extension consists of:
 
-**Button not appearing**: Make sure the shortcode is properly placed and the extension is loaded in `_quarto.yml`.
+1. A Lua filter that injects the favorites button and JavaScript/CSS into each page
+2. A JavaScript file that manages the favorites functionality
+3. A CSS file that styles the favorites button and list
 
-**Styling issues**: Check that `favorites.css` is being loaded. You may need to adjust CSS for your specific theme.
+Since Quarto generates static websites, the favorites functionality runs entirely in the user's browser, with no server-side processing required.
 
 ## License
 
-MIT License - Feel free to modify and use in your projects!
+MIT License

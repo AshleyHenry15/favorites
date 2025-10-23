@@ -1,0 +1,46 @@
+---
+title: "Features and Benefits"
+---
+
+## Features of the Quarto Favorites Extension
+
+### User Features
+
+- **Simple Favoriting**: One-click to add/remove pages from favorites
+- **Visual Feedback**: Heart icon turns red when a page is favorited
+- **Centralized Access**: All favorites are accessible from one page
+- **Persistence**: Favorites are saved between browser sessions
+- **Easy Removal**: Remove favorites directly from the list
+
+### Technical Features
+
+- **No Dependencies**: Works with any Quarto website without additional dependencies
+- **Client-Side Storage**: Uses browser localStorage for persistence
+- **Minimal Footprint**: Lightweight implementation
+- **Easy Installation**: Simple installation via `quarto add`
+- **Customizable**: Easily style the components with CSS
+
+### Benefits
+
+#### For Users
+
+- Save time finding frequently used pages
+- Create a personalized collection of important content
+- Access important pages without searching or navigating complex menus
+
+#### For Website Owners
+
+- Enhance user experience with a useful feature
+- Encourage return visits to your site
+- Provide value without requiring backend infrastructure
+
+### Implementation Details
+
+The extension automatically injects:
+
+- A favorites button on every page
+- A favorites list component on a dedicated page
+- The necessary JavaScript for managing favorites
+- CSS styles for the favorites components
+
+All that's required is to include the extension in your Quarto project and create a page with `favorites_list: true` in the YAML front matter.

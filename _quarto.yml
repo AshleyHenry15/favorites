@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Favorites Extension Demo"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: about.qmd
+        text: About
+      - href: features.qmd
+        text: Features
+      - href: favorites.qmd
+        text: My Favorites
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+filters:
+  - favorites

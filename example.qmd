@@ -1,0 +1,32 @@
+---
+title: "Favorites Extension Example"
+---
+
+## Favorites Extension Example
+
+This document demonstrates how to use the Favorites extension for Quarto.
+
+### Features
+
+- Add a favorites button (heart icon) to each page
+- Save favorites to browser localStorage
+- Display a list of favorites on a dedicated page
+
+### How to Use
+
+1. Install the extension with `quarto add AshleyHenry15/favorites`
+2. The favorites button will appear automatically on each page
+3. Create a favorites list page with `favorites_list: true` in the YAML front matter
+
+### Creating a Favorites Page
+
+To create a page that displays all your favorites, create a new Quarto document with:
+
+```yaml
+---
+title: "My Favorites"
+favorites_list: true
+---
+
+This page shows all your favorited pages.
+```

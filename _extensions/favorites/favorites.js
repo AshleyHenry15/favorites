@@ -1,184 +1,185 @@
-// Quarto Favorites Extension
-(function() {
-  'use strict';
-  
-  const STORAGE_KEY = 'quarto-favorites';
-  
-  // Get favorites from localStorage
-  function getFavorites() {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch (e) {
-      console.error('Error reading favorites:', e);
-      return [];
-    }
+// favorites.js
+// JavaScript for managing favorites functionality
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize the favorites system
+  initFavorites();
+});
+
+// Initialize the favorites system
+function initFavorites() {
+  // Check if localStorage is available
+  if (!storageAvailable('localStorage')) {
+    console.error('localStorage is not available. Favorites functionality will not work.');
+    return;
   }
-  
-  // Save favorites to localStorage
-  function saveFavorites(favorites) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
-      return true;
-    } catch (e) {
-      console.error('Error saving favorites:', e);
-      return false;
-    }
-  }
-  
-  // Check if current page is favorited
-  function isFavorited(url) {
-    const favorites = getFavorites();
-    return favorites.some(fav => fav.url === url);
-  }
-  
-  // Add page to favorites
-  function addFavorite(url, title) {
-    const favorites = getFavorites();
-    if (!isFavorited(url)) {
-      favorites.push({
-        url: url,
-        title: title,
-        timestamp: new Date().toISOString()
-      });
-      saveFavorites(favorites);
-      return true;
-    }
+
+  // Setup the favorites button if it exists on the page
+  setupFavoritesButton();
+
+  // Populate the favorites list if on the favorites page
+  populateFavoritesList();
+}
+
+// Check if storage is available
+function storageAvailable(type) {
+  try {
+    var storage = window[type];
+    var x = '__storage_test__';
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  } catch (e) {
     return false;
   }
-  
-  // Remove page from favorites
-  function removeFavorite(url) {
-    let favorites = getFavorites();
-    favorites = favorites.filter(fav => fav.url !== url);
-    saveFavorites(favorites);
+}
+
+// Setup the favorites button
+function setupFavoritesButton() {
+  const button = document.getElementById('favorites-button');
+  if (!button) return;
+
+  // Get current page information
+  const pageInfo = JSON.parse(button.getAttribute('data-page-info') || '{}');
+  pageInfo.url = window.location.href;
+
+  // Check if this page is already favorited
+  const favorites = getFavorites();
+  const isFavorited = favorites.some(fav => fav.url === pageInfo.url);
+
+  // Update button appearance based on favorite status
+  updateFavoriteButton(button, isFavorited);
+
+  // Add click event to toggle favorite status
+  button.addEventListener('click', function() {
+    toggleFavorite(pageInfo);
+    const newStatus = !isFavorited;
+    updateFavoriteButton(button, newStatus);
+  });
+}
+
+// Update the favorite button appearance
+function updateFavoriteButton(button, isFavorited) {
+  const iconSpan = button.querySelector('.favorites-icon');
+  const textSpan = button.querySelector('.favorites-text');
+
+  if (isFavorited) {
+    button.classList.add('favorited');
+    iconSpan.textContent = '❤'; // Filled heart
+    textSpan.textContent = 'Remove from Favorites';
+  } else {
+    button.classList.remove('favorited');
+    iconSpan.textContent = '♡'; // Empty heart
+    textSpan.textContent = 'Add to Favorites';
   }
-  
-  // Toggle favorite status
-  function toggleFavorite(url, title) {
-    if (isFavorited(url)) {
-      removeFavorite(url);
-      return false;
-    } else {
-      addFavorite(url, title);
-      return true;
+}
+
+// Toggle a page in favorites
+function toggleFavorite(pageInfo) {
+  const favorites = getFavorites();
+  const index = favorites.findIndex(fav => fav.url === pageInfo.url);
+
+  if (index === -1) {
+    // Add to favorites
+    favorites.push({
+      title: pageInfo.title,
+      url: pageInfo.url,
+      dateAdded: new Date().toISOString()
+    });
+  } else {
+    // Remove from favorites
+    favorites.splice(index, 1);
+  }
+
+  // Save updated favorites
+  saveFavorites(favorites);
+}
+
+// Get all favorites from localStorage
+function getFavorites() {
+  try {
+    const favoritesJson = localStorage.getItem('quarto-favorites') || '[]';
+    return JSON.parse(favoritesJson);
+  } catch (e) {
+    console.error('Error retrieving favorites:', e);
+    return [];
+  }
+}
+
+// Save favorites to localStorage
+function saveFavorites(favorites) {
+  try {
+    localStorage.setItem('quarto-favorites', JSON.stringify(favorites));
+  } catch (e) {
+    console.error('Error saving favorites:', e);
+  }
+}
+
+// Populate the favorites list on the favorites page
+function populateFavoritesList() {
+  const favoritesList = document.getElementById('favorites-list');
+  if (!favoritesList) return;
+
+  const favorites = getFavorites();
+  const noFavoritesMessage = favoritesList.querySelector('.no-favorites-message');
+
+  // Clear existing list except for the no-favorites message
+  Array.from(favoritesList.children).forEach(child => {
+    if (!child.classList.contains('no-favorites-message')) {
+      favoritesList.removeChild(child);
     }
+  });
+
+  // Show/hide no favorites message
+  if (favorites.length === 0) {
+    if (noFavoritesMessage) noFavoritesMessage.style.display = 'block';
+    return;
+  } else {
+    if (noFavoritesMessage) noFavoritesMessage.style.display = 'none';
   }
-  
-  // Update all favorite buttons on the page
-  function updateFavoriteButtons() {
-    const buttons = document.querySelectorAll('.favorite-button');
-    const currentUrl = window.location.pathname;
-    const favorited = isFavorited(currentUrl);
-    
-    buttons.forEach(button => {
-      if (favorited) {
-        button.classList.add('favorited');
-        button.setAttribute('aria-pressed', 'true');
-        button.querySelector('.favorite-icon').textContent = '★';
-        button.querySelector('.favorite-text').textContent = 'Favorited';
-      } else {
-        button.classList.remove('favorited');
-        button.setAttribute('aria-pressed', 'false');
-        button.querySelector('.favorite-icon').textContent = '☆';
-        button.querySelector('.favorite-text').textContent = 'Add to Favorites';
+
+  // Create a list of favorites
+  const ul = document.createElement('ul');
+  ul.className = 'favorites-items';
+
+  favorites.forEach(favorite => {
+    const li = document.createElement('li');
+
+    const link = document.createElement('a');
+    link.href = favorite.url;
+    link.textContent = favorite.title;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-favorite';
+    removeBtn.innerHTML = '&times;';
+    removeBtn.title = 'Remove from favorites';
+    removeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      removeFavorite(favorite.url);
+      li.remove();
+
+      // If no favorites left, show the message
+      if (getFavorites().length === 0) {
+        if (noFavoritesMessage) noFavoritesMessage.style.display = 'block';
       }
     });
+
+    li.appendChild(link);
+    li.appendChild(removeBtn);
+    ul.appendChild(li);
+  });
+
+  favoritesList.appendChild(ul);
+}
+
+// Remove a favorite by URL
+function removeFavorite(url) {
+  const favorites = getFavorites();
+  const index = favorites.findIndex(fav => fav.url === url);
+
+  if (index !== -1) {
+    favorites.splice(index, 1);
+    saveFavorites(favorites);
   }
-  
-  // Render favorites list
-  function renderFavoritesList() {
-    const container = document.querySelector('.favorites-list-container');
-    if (!container) return;
-    
-    const favorites = getFavorites();
-    
-    if (favorites.length === 0) {
-      container.innerHTML = '<p class="no-favorites">No favorites yet. Browse the site and click the star icon to add pages to your favorites!</p>';
-      return;
-    }
-    
-    // Sort by timestamp (newest first)
-    favorites.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    
-    const list = document.createElement('ul');
-    list.className = 'favorites-list';
-    
-    favorites.forEach(fav => {
-      const li = document.createElement('li');
-      li.className = 'favorite-item';
-      
-      const link = document.createElement('a');
-      link.href = fav.url;
-      link.textContent = fav.title;
-      link.className = 'favorite-link';
-      
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'remove-favorite';
-      removeBtn.innerHTML = '×';
-      removeBtn.setAttribute('aria-label', `Remove ${fav.title} from favorites`);
-      removeBtn.onclick = function(e) {
-        e.preventDefault();
-        removeFavorite(fav.url);
-        renderFavoritesList();
-      };
-      
-      li.appendChild(link);
-      li.appendChild(removeBtn);
-      list.appendChild(li);
-    });
-    
-    container.innerHTML = '';
-    container.appendChild(list);
-  }
-  
-  // Initialize when DOM is ready
-  function init() {
-    // Set up favorite buttons
-    document.querySelectorAll('.favorite-button').forEach(button => {
-      button.addEventListener('click', function() {
-        const currentUrl = window.location.pathname;
-        const currentTitle = document.title;
-        const favorited = toggleFavorite(currentUrl, currentTitle);
-        updateFavoriteButtons();
-        
-        // Show feedback
-        const feedback = document.createElement('div');
-        feedback.className = 'favorite-feedback';
-        feedback.textContent = favorited ? 'Added to favorites!' : 'Removed from favorites';
-        document.body.appendChild(feedback);
-        
-        setTimeout(() => {
-          feedback.classList.add('show');
-        }, 10);
-        
-        setTimeout(() => {
-          feedback.classList.remove('show');
-          setTimeout(() => feedback.remove(), 300);
-        }, 2000);
-      });
-    });
-    
-    // Update button states
-    updateFavoriteButtons();
-    
-    // Render favorites list if on favorites page
-    renderFavoritesList();
-  }
-  
-  // Run init when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-  
-  // Export functions for external use
-  window.quartoFavorites = {
-    getFavorites,
-    addFavorite,
-    removeFavorite,
-    toggleFavorite,
-    isFavorited
-  };
-})();
+}

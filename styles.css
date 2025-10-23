@@ -1,0 +1,30 @@
+/* Demo site styles */
+
+.navbar {
+  padding: 0.5rem 1rem;
+}
+
+.content-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Custom styles for the favorites demo */
+.demo-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  background-color: #f8f9fa;
+}
+
+.demo-section h3 {
+  margin-top: 0;
+}
+
+/* Overrides for the extension */
+.favorites-button-container {
+  /* Move the button to fit better with the navbar */
+  top: 15px;
+  right: 15px;
+}

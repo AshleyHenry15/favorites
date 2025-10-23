@@ -1,41 +1,20 @@
-# Compiled Lua sources
-luac.out
+# Quarto build output
+_site/
+/.quarto/
 
-# luarocks build files
-*.src.rock
-*.zip
-*.tar.gz
+# System files
+.DS_Store
+.Thumbs.db
 
-# Object files
-*.o
-*.os
-*.ko
-*.obj
-*.elf
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-*.def
-*.exp
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+**/*.quarto_ipynb

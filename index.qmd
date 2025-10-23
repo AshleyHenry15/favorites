@@ -1,0 +1,24 @@
+---
+title: "Favorites Extension Demo"
+---
+
+## Welcome to the Favorites Extension Demo!
+
+This is a demonstration of the Quarto Favorites Extension, which allows users to save their favorite pages for easy access later.
+
+### How to Use
+
+1. Click the heart icon (♡) in the top right corner of any page to add it to your favorites
+2. The heart will turn red (❤) when a page is in your favorites
+3. Visit the [My Favorites](/favorites.qmd) page to see all your favorited pages
+4. Your favorites will persist even if you close your browser
+
+### Try it out!
+
+Browse through the pages of this demo site and try favoriting some pages. Then check your [My Favorites](/favorites.qmd) page to see them all in one place!
+
+### Features
+
+- Simple, intuitive interface
+- Persistent storage using browser localStorage
+- Works with any Quarto website

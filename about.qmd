@@ -1,0 +1,30 @@
+---
+title: "About the Favorites Extension"
+---
+
+## About the Quarto Favorites Extension
+
+This extension adds a simple but powerful feature to Quarto websites: the ability for users to bookmark or "favorite" pages for easy access later.
+
+### Why Create This Extension?
+
+When browsing large documentation sites or complex websites, users often need to return to specific pages repeatedly. The Favorites extension provides a way for users to create their own personalized collection of important pages.
+
+### How It Works
+
+The extension uses the browser's localStorage to store the user's favorites. This means:
+
+- Favorites persist even after the browser is closed
+- No server-side processing is required
+- The solution works with static Quarto websites
+- Each user's favorites are stored on their own device
+
+### Technical Implementation
+
+The extension consists of:
+
+- Lua filters that inject JavaScript, CSS, and HTML into pages
+- Client-side JavaScript for managing favorites
+- CSS for styling the favorites button and list
+
+Since Quarto generates static websites, all favorites functionality runs entirely in the user's browser.
