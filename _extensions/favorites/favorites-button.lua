@@ -48,9 +48,8 @@ function Meta(meta)
     -- Create the favorites button HTML
     local button_html = string.format([[
       <div class="favorites-button-container">
-        <button id="favorites-button" class="favorites-button" data-page-info='%s'>
+        <button id="favorites-button" class="favorites-button" data-page-info='%s' title="Add to Favorites">
           <span class="favorites-icon">♡</span>
-          <span class="favorites-text">Add to Favorites</span>
         </button>
       </div>
     ]], page_info)
