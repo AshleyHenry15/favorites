@@ -1,6 +1,29 @@
 // favorites.js
 // JavaScript for managing favorites functionality
 
+// Normalize URLs for consistent comparison
+function normalizeUrl(url) {
+  if (!url) return '';
+
+  try {
+    // Create a URL object to parse the URL
+    const urlObj = new URL(url);
+
+    // Get hostname and pathname (remove trailing slash if present)
+    let path = urlObj.pathname;
+    if (path.endsWith('/') && path !== '/') {
+      path = path.slice(0, -1);
+    }
+
+    // Return normalized URL (hostname + path, without protocol, query params, or hash)
+    return urlObj.hostname + path;
+  } catch (e) {
+    // If URL parsing fails, return original string
+    console.warn('Failed to normalize URL:', url);
+    return url;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize the favorites system
   initFavorites();
@@ -68,7 +91,9 @@ function setupFavoritesButton() {
 
   // Check if this page is already favorited
   const favorites = getFavorites();
-  const isFavorited = favorites.some(fav => fav.url === pageInfo.url);
+  // Normalize URLs for comparison (remove trailing slashes, protocol differences, etc.)
+  const normalizedCurrentUrl = normalizeUrl(pageInfo.url);
+  const isFavorited = favorites.some(fav => normalizeUrl(fav.url) === normalizedCurrentUrl);
 
   // Update button appearance based on favorite status
   updateFavoriteButton(button, isFavorited);
@@ -77,7 +102,8 @@ function setupFavoritesButton() {
   button.addEventListener('click', function() {
     // Get current status before toggling
     const favorites = getFavorites();
-    const currentStatus = favorites.some(fav => fav.url === pageInfo.url);
+    const normalizedCurrentUrl = normalizeUrl(pageInfo.url);
+    const currentStatus = favorites.some(fav => normalizeUrl(fav.url) === normalizedCurrentUrl);
 
     // Toggle the favorite status
     toggleFavorite(pageInfo);
@@ -101,7 +127,8 @@ function updateFavoriteButton(button, isFavorited) {
 // Toggle a page in favorites
 function toggleFavorite(pageInfo) {
   const favorites = getFavorites();
-  const index = favorites.findIndex(fav => fav.url === pageInfo.url);
+  const normalizedUrl = normalizeUrl(pageInfo.url);
+  const index = favorites.findIndex(fav => normalizeUrl(fav.url) === normalizedUrl);
 
   if (index === -1) {
     // Add to favorites
@@ -200,7 +227,8 @@ function populateFavoritesList() {
 // Remove a favorite by URL
 function removeFavorite(url) {
   const favorites = getFavorites();
-  const index = favorites.findIndex(fav => fav.url === url);
+  const normalizedUrl = normalizeUrl(url);
+  const index = favorites.findIndex(fav => normalizeUrl(fav.url) === normalizedUrl);
 
   if (index !== -1) {
     favorites.splice(index, 1);
@@ -306,7 +334,8 @@ function handleImport(importedFavorites) {
 
       importedFavorites.forEach(importedFav => {
         // Check if this URL already exists in current favorites
-        const exists = mergedFavorites.some(existingFav => existingFav.url === importedFav.url);
+        const normalizedImportedUrl = normalizeUrl(importedFav.url);
+        const exists = mergedFavorites.some(existingFav => normalizeUrl(existingFav.url) === normalizedImportedUrl);
         if (!exists) {
           mergedFavorites.push(importedFav);
         }
@@ -327,4 +356,24 @@ function handleImport(importedFavorites) {
 
   // Refresh the favorites list display
   populateFavoritesList();
+
+  // Update button on current page if it exists
+  updateCurrentPageButton();
+}
+
+// Update the button on the current page if it exists
+function updateCurrentPageButton() {
+  const button = document.getElementById('favorites-button');
+  if (!button) return;
+
+  const pageInfo = JSON.parse(button.getAttribute('data-page-info') || '{}');
+  pageInfo.url = window.location.href;
+
+  // Check if this page is now in favorites
+  const favorites = getFavorites();
+  const normalizedCurrentUrl = normalizeUrl(pageInfo.url);
+  const isFavorited = favorites.some(fav => normalizeUrl(fav.url) === normalizedCurrentUrl);
+
+  // Update button appearance
+  updateFavoriteButton(button, isFavorited);
 }
