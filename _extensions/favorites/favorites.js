@@ -72,9 +72,15 @@ function setupFavoritesButton() {
 
   // Add click event to toggle favorite status
   button.addEventListener('click', function() {
+    // Get current status before toggling
+    const favorites = getFavorites();
+    const currentStatus = favorites.some(fav => fav.url === pageInfo.url);
+
+    // Toggle the favorite status
     toggleFavorite(pageInfo);
-    const newStatus = !isFavorited;
-    updateFavoriteButton(button, newStatus);
+
+    // Update button appearance with the opposite of current status
+    updateFavoriteButton(button, !currentStatus);
   });
 }
 
