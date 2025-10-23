@@ -12,6 +12,15 @@ quarto add AshleyHenry15/favorites
 
 This will install the extension under the `_extensions` directory.
 
+## Enable Favorites
+
+In the `_quarto.yml`, add:
+
+```yaml
+filters:
+  - favorites
+```
+
 ## Usage
 
 ### Adding Favorites Button to Pages
