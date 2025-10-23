@@ -55,8 +55,8 @@ function Pandoc(doc)
       </div>
     ]], page_info)
 
-    -- Add the button HTML to appear below the title
-    quarto.doc.include_text("after-title", button_html)
+    -- Add the button HTML in a valid location
+    quarto.doc.include_text("before-body", button_html)
 
     -- If this is a favorites list page, add the favorites list HTML
     if doc.meta.favorites_list then

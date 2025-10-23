@@ -3,9 +3,26 @@
 
 /* Favorites Button */
 .favorites-button-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+/* Position the button properly with the title */
+.quarto-title-banner, .title-block, .quarto-title-block {
+  position: relative;
+}
+
+/* Special class added by our JavaScript */
+.favorites-title-container .favorites-button-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin: 0;
+  z-index: 100;
 }
 
 .favorites-button {

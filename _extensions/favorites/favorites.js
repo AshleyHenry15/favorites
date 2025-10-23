@@ -4,7 +4,27 @@
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize the favorites system
   initFavorites();
+
+  // Position the favorites button within the title block
+  positionFavoritesButton();
 });
+
+// Position the favorites button near the title
+function positionFavoritesButton() {
+  const buttonContainer = document.querySelector('.favorites-button-container');
+  const titleBlock = document.querySelector('.quarto-title-block') || document.querySelector('.title-block');
+
+  if (buttonContainer && titleBlock) {
+    // Remove from current position
+    buttonContainer.parentNode.removeChild(buttonContainer);
+
+    // Append to title block
+    titleBlock.appendChild(buttonContainer);
+
+    // Add class to title block for positioning context
+    titleBlock.classList.add('favorites-title-container');
+  }
+}
 
 // Initialize the favorites system
 function initFavorites() {

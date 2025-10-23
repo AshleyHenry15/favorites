@@ -55,8 +55,8 @@ function Meta(meta)
       </div>
     ]], page_info)
 
-    -- Add the button HTML below the title
-    quarto.doc.include_text("after-title", button_html)
+    -- Add the button HTML in a valid location
+    quarto.doc.include_text("before-body", button_html)
   end
 end
 
