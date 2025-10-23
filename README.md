@@ -55,13 +55,31 @@ In the `_quarto.yml` add:
         aria-label: "My Favorites"
 ```
 
+## Exporting and Importing Favorites
+
+The favorites page includes Export and Import buttons that allow users to:
+
+1. **Export Favorites**: Download all favorited pages as a JSON file
+2. **Import Favorites**: Load favorites from a previously exported JSON file
+
+These features allow users to:
+- Back up their favorites for safekeeping
+- Transfer favorites between different browsers or devices
+- Share their favorites with other users
+
+When importing, users have the option to either:
+- Merge the imported favorites with their existing ones (avoiding duplicates)
+- Replace all existing favorites with the imported ones
+
+The exported JSON file includes metadata like export date and version information, along with the complete list of favorited pages (titles, URLs, and when they were added).
+
 ## Customization
 
 You can customize the appearance of the favorites button and list by adding custom CSS rules to your Quarto project.
 
 ## Browser Compatibility
 
-This extension uses the browser's localStorage API to store favorites, which is supported by all modern browsers. Favorites are saved per browser per device, so if a user switches browsers or devices, their favorites will not be transferred.
+This extension uses the browser's localStorage API to store favorites, which is supported by all modern browsers. Favorites are saved per browser per device, but you can use the Export/Import functionality to transfer favorites between devices.
 
 ## How It Works
 

@@ -39,6 +39,9 @@ function initFavorites() {
 
   // Populate the favorites list if on the favorites page
   populateFavoritesList();
+
+  // Setup export/import functionality
+  setupExportImport();
 }
 
 // Check if storage is available
@@ -203,4 +206,125 @@ function removeFavorite(url) {
     favorites.splice(index, 1);
     saveFavorites(favorites);
   }
+}
+
+// Set up export and import functionality
+function setupExportImport() {
+  // Set up export button
+  const exportButton = document.getElementById('export-favorites');
+  if (exportButton) {
+    exportButton.addEventListener('click', exportFavorites);
+  }
+
+  // Set up import button
+  const importInput = document.getElementById('import-favorites');
+  if (importInput) {
+    importInput.addEventListener('change', importFavorites);
+  }
+}
+
+// Export favorites to a JSON file
+function exportFavorites() {
+  const favorites = getFavorites();
+
+  // If no favorites, show a message and return
+  if (favorites.length === 0) {
+    alert('You have no favorites to export.');
+    return;
+  }
+
+  // Create export data with metadata
+  const exportData = {
+    version: '1.0',
+    exportDate: new Date().toISOString(),
+    favorites: favorites
+  };
+
+  // Convert to JSON
+  const jsonData = JSON.stringify(exportData, null, 2);
+
+  // Create download link
+  const blob = new Blob([jsonData], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  // Create a temporary link element and trigger download
+  const downloadLink = document.createElement('a');
+  downloadLink.href = url;
+  downloadLink.download = 'favorites-' + new Date().toISOString().split('T')[0] + '.json';
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+
+  // Clean up
+  document.body.removeChild(downloadLink);
+  URL.revokeObjectURL(url);
+}
+
+// Import favorites from a JSON file
+function importFavorites(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      // Parse the imported JSON
+      const importedData = JSON.parse(e.target.result);
+
+      // Validate the imported data
+      if (!importedData.favorites || !Array.isArray(importedData.favorites)) {
+        throw new Error('Invalid favorites data format');
+      }
+
+      // Handle importing based on user's choice
+      handleImport(importedData.favorites);
+
+    } catch (error) {
+      alert('Error importing favorites: ' + error.message);
+    }
+
+    // Clear the input so the same file can be selected again
+    event.target.value = '';
+  };
+
+  reader.readAsText(file);
+}
+
+// Handle import with user choice for merge or replace
+function handleImport(importedFavorites) {
+  if (importedFavorites.length === 0) {
+    alert('No favorites found in the imported file.');
+    return;
+  }
+
+  const currentFavorites = getFavorites();
+
+  // If current favorites exist, ask user if they want to merge or replace
+  if (currentFavorites.length > 0) {
+    if (confirm('Do you want to merge with your existing favorites? Click OK to merge, or Cancel to replace all existing favorites.')) {
+      // Merge favorites (avoiding duplicates)
+      const mergedFavorites = [...currentFavorites];
+
+      importedFavorites.forEach(importedFav => {
+        // Check if this URL already exists in current favorites
+        const exists = mergedFavorites.some(existingFav => existingFav.url === importedFav.url);
+        if (!exists) {
+          mergedFavorites.push(importedFav);
+        }
+      });
+
+      saveFavorites(mergedFavorites);
+      alert(`Successfully merged ${importedFavorites.length} favorites (${mergedFavorites.length - currentFavorites.length} new added).`);
+    } else {
+      // Replace all favorites
+      saveFavorites(importedFavorites);
+      alert(`Replaced all favorites with ${importedFavorites.length} imported favorites.`);
+    }
+  } else {
+    // No current favorites, just save the imported ones
+    saveFavorites(importedFavorites);
+    alert(`Successfully imported ${importedFavorites.length} favorites.`);
+  }
+
+  // Refresh the favorites list display
+  populateFavoritesList();
 }
