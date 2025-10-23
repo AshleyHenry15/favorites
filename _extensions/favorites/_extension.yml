@@ -3,5 +3,4 @@ author: Ashley Henry
 version: 1.0.0
 contributes:
   filters:
-    - favorites-button.lua
-    - favorites-list.lua
+    - favorites.lua
