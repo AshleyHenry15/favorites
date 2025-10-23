@@ -72,25 +72,30 @@ function setupFavoritesButton() {
 
   // Add click event to toggle favorite status
   button.addEventListener('click', function() {
+    // Get current status before toggling
+    const favorites = getFavorites();
+    const currentStatus = favorites.some(fav => fav.url === pageInfo.url);
+
+    // Toggle the favorite status
     toggleFavorite(pageInfo);
-    const newStatus = !isFavorited;
-    updateFavoriteButton(button, newStatus);
+
+    // Update button appearance with the opposite of current status
+    updateFavoriteButton(button, !currentStatus);
   });
 }
 
 // Update the favorite button appearance
 function updateFavoriteButton(button, isFavorited) {
   const iconSpan = button.querySelector('.favorites-icon');
-  const textSpan = button.querySelector('.favorites-text');
 
   if (isFavorited) {
     button.classList.add('favorited');
     iconSpan.textContent = '❤'; // Filled heart
-    textSpan.textContent = 'Remove from Favorites';
+    button.title = 'Remove from Favorites';
   } else {
     button.classList.remove('favorited');
     iconSpan.textContent = '♡'; // Empty heart
-    textSpan.textContent = 'Add to Favorites';
+    button.title = 'Add to Favorites';
   }
 }
 
