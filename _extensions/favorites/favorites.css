@@ -46,20 +46,24 @@
 }
 
 .favorites-icon {
-  font-size: 22px; /* Larger icon */
-  color: #6c757d;
+  width: 20px;
+  height: 20px;
+  stroke: #6c757d; /* Gray outline for the heart icon */
+  stroke-width: 2;
+  fill: none; /* No fill by default */
   transition: all 0.2s ease;
-  line-height: 1;
 }
 
 .favorites-button.favorited .favorites-icon {
-  color: #dc3545; /* Red heart when favorited */
+  stroke: #dc3545; /* Red outline when favorited */
+  fill: #dc3545; /* Red fill when favorited */
 }
 
 /* Style for the navbar heart icon */
-.navbar .bi-heart-fill {
+/*.navbar .bi-heart-fill {
   color: #dc3545; /* Red heart in navbar */
-}
+/*}
+*/
 
 /* Text element removed, using title attribute for tooltip instead */
 
