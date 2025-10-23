@@ -16,7 +16,7 @@
   position: relative;
 }
 
-/* Special class added by our JavaScript */
+/* JavaScript class */
 .favorites-title-container .favorites-button-container {
   position: absolute;
   top: 10px;
