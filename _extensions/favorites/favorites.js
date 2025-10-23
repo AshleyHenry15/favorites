@@ -327,4 +327,23 @@ function handleImport(importedFavorites) {
 
   // Refresh the favorites list display
   populateFavoritesList();
+
+  // Update button on current page if it exists
+  updateCurrentPageButton();
+}
+
+// Update the button on the current page if it exists
+function updateCurrentPageButton() {
+  const button = document.getElementById('favorites-button');
+  if (!button) return;
+
+  const pageInfo = JSON.parse(button.getAttribute('data-page-info') || '{}');
+  pageInfo.url = window.location.href;
+
+  // Check if this page is now in favorites
+  const favorites = getFavorites();
+  const isFavorited = favorites.some(fav => fav.url === pageInfo.url);
+
+  // Update button appearance
+  updateFavoriteButton(button, isFavorited);
 }
