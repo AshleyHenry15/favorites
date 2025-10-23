@@ -12,8 +12,10 @@ website:
         text: About
       - href: features.qmd
         text: Features
+    right:
       - href: favorites.qmd
-        text: My Favorites
+        icon: heart-fill
+        aria-label: Favorites
 
 format:
   html:

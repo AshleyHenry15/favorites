@@ -28,3 +28,23 @@
   top: 15px;
   right: 15px;
 }
+
+/* Add tooltip to the heart icon in navbar */
+.navbar-nav-scroll .nav-link[aria-label="Favorites"] {
+  position: relative;
+}
+
+.navbar-nav-scroll .nav-link[aria-label="Favorites"]:hover::after {
+  content: "My Favorites";
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #000;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}

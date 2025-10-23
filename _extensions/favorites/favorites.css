@@ -36,6 +36,11 @@
   color: #dc3545; /* Red heart when favorited */
 }
 
+/* Style for the navbar heart icon */
+.navbar .bi-heart-fill {
+  color: #dc3545; /* Red heart in navbar */
+}
+
 .favorites-text {
   font-size: 14px;
   color: #495057;
