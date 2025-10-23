@@ -1,5 +1,5 @@
 ---
-title: "My Favorites"
+page_title: false
 favorites_list: true
 ---
 
