@@ -1,0 +1,124 @@
+/* favorites.css */
+/* Styles for the favorites extension */
+
+/* Favorites Button */
+.favorites-button-container {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+/* Position the button with the title */
+.quarto-title-banner, .title-block, .quarto-title-block {
+  position: relative;
+}
+
+/* Special class added by our JavaScript */
+.favorites-title-container .favorites-button-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin: 0;
+  z-index: 100;
+}
+
+.favorites-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.favorites-button:hover {
+  background-color: #e9ecef;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.favorites-icon {
+  font-size: 18px;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.favorites-button.favorited .favorites-icon {
+  color: #dc3545; /* Red heart when favorited */
+}
+
+/* Style for the navbar heart icon */
+.navbar .bi-heart-fill {
+  color: #dc3545; /* Red heart in navbar */
+}
+
+.favorites-text {
+  font-size: 14px;
+  color: #495057;
+}
+
+/* Favorites List */
+.favorites-list-container {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.favorites-list-container h2 {
+  margin-top: 0;
+  color: #212529;
+}
+
+.no-favorites-message {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.favorites-items {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.favorites-items li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.favorites-items li:last-child {
+  border-bottom: none;
+}
+
+.favorites-items a {
+  text-decoration: none;
+  color: #0d6efd;
+  flex-grow: 1;
+}
+
+.favorites-items a:hover {
+  text-decoration: underline;
+}
+
+.remove-favorite {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+.remove-favorite:hover {
+  color: #dc3545;
+}
