@@ -59,11 +59,7 @@
   fill: #dc3545; /* Red fill when favorited */
 }
 
-/* Style for the navbar heart icon */
-.navbar .bi-heart-fill {
-  color: #dc3545; /* Red heart in navbar */
-  font-size: 1.1rem; /* Slightly larger icon */
-}
+/* Navbar icon styling moved to styles.css */
 
 /* Text element removed, using title attribute for tooltip instead */
 

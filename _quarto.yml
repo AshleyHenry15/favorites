@@ -13,7 +13,8 @@ website:
       - href: features.qmd
         text: Features
     right:
-      - href: favorites.qmd
+      - text: "Favs"
+        href: favorites.qmd
         icon: heart-fill
         aria-label: "My Favorites"
 
