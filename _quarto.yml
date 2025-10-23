@@ -14,8 +14,7 @@ website:
         text: Features
     right:
       - href: favorites.qmd
-        html: custom-heart.html
-        text: " "
+        icon: heart-fill
         aria-label: "My Favorites"
 
 format:
