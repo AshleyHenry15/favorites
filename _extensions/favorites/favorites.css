@@ -60,10 +60,11 @@
 }
 
 /* Style for the navbar heart icon */
-/*.navbar .bi-heart-fill {
-  color: #dc3545; /* Red heart in navbar */
-/*}
-*/
+.navbar-heart-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: -2px;
+}
 
 /* Text element removed, using title attribute for tooltip instead */
 
