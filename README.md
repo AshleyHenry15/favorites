@@ -35,6 +35,17 @@ This page displays all your favorited pages from this website.
 
 The `favorites_list: true` parameter tells the extension to display the favorites list on this page.
 
+## Link to the favorites page
+
+In the `_quarto.yml` add:
+
+``yaml
+      - icon: heart-fill
+        href: favorites.qmd
+        text: " "
+        aria-label: "My Favorites"
+```
+
 ## Customization
 
 You can customize the appearance of the favorites button and list by adding custom CSS rules to your Quarto project.
