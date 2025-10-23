@@ -28,11 +28,13 @@
 .favorites-button {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
-  border-radius: 20px;
+  border-radius: 50%; /* Makes the button round */
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -44,9 +46,10 @@
 }
 
 .favorites-icon {
-  font-size: 18px;
+  font-size: 22px; /* Larger icon */
   color: #6c757d;
   transition: all 0.2s ease;
+  line-height: 1;
 }
 
 .favorites-button.favorited .favorites-icon {
@@ -58,10 +61,7 @@
   color: #dc3545; /* Red heart in navbar */
 }
 
-.favorites-text {
-  font-size: 14px;
-  color: #495057;
-}
+/* Text element removed, using title attribute for tooltip instead */
 
 /* Favorites List */
 .favorites-list-container {

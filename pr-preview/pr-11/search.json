@@ -4,7 +4,7 @@
     "href": "TESTING.html",
     "title": "Testing the Favorites Extension",
     "section": "",
-    "text": "♡\n          Add to Favorites"
+    "text": "♡"
   },
   {
     "objectID": "TESTING.html#setup",
@@ -39,14 +39,14 @@
     "href": "favorites.html",
     "title": "Favorites Extension Demo",
     "section": "",
-    "text": "♡\n          Add to Favorites\n        \n      \n    \n        \n          My Favorites\n          \n            \n            No favorites yet. Browse the site and click the heart icon to add pages to your favorites.\n          \n        \n      \n\n\n\n\nThis page displays all your favorited pages from this website.\nClick the heart icon (♡) on any page to add it to your favorites. The heart will turn red (❤) when a page is in your favorites. Your favorites will be displayed here and persist even if you close your browser.\nTo remove a page from your favorites, either: 1. Click the heart icon again on that page 2. Click the “×” button next to the page in the list above"
+    "text": "♡\n        \n      \n    \n        \n          My Favorites\n          \n            \n            No favorites yet. Browse the site and click the heart icon to add pages to your favorites.\n          \n        \n      \n\n\n\n\nThis page displays all your favorited pages from this website.\nClick the heart icon (♡) on any page to add it to your favorites. The heart will turn red (❤) when a page is in your favorites. Your favorites will be displayed here and persist even if you close your browser.\nTo remove a page from your favorites, either: 1. Click the heart icon again on that page 2. Click the “×” button next to the page in the list above"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Favorites Extension Demo",
     "section": "",
-    "text": "♡\n          Add to Favorites"
+    "text": "♡"
   },
   {
     "objectID": "index.html#welcome-to-the-favorites-extension-demo",
@@ -60,7 +60,7 @@
     "href": "example.html",
     "title": "Favorites Extension Example",
     "section": "",
-    "text": "♡\n          Add to Favorites"
+    "text": "♡"
   },
   {
     "objectID": "example.html#favorites-extension-example",
@@ -74,7 +74,7 @@
     "href": "about.html",
     "title": "About the Favorites Extension",
     "section": "",
-    "text": "♡\n          Add to Favorites"
+    "text": "♡"
   },
   {
     "objectID": "about.html#about-the-quarto-favorites-extension",
@@ -88,7 +88,7 @@
     "href": "features.html",
     "title": "Features and Benefits",
     "section": "",
-    "text": "♡\n          Add to Favorites"
+    "text": "♡"
   },
   {
     "objectID": "features.html#features-of-the-quarto-favorites-extension",
