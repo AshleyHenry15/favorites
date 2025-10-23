@@ -1,17 +1,10 @@
 /* Custom styles for the favorites extension */
 
-/* Style the navbar heart icon to match our SVG heart */
-.navbar .bi-heart-fill::before {
-  content: "";
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='%23dc3545' stroke-width='2' fill='%23dc3545' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'%3E%3C/path%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  vertical-align: middle;
-  margin-right: 4px;
+/* Minimal styling for navbar heart icon to ensure it inherits colors */
+.navbar .bi-heart-fill {
+  /* Color is inherited automatically */
+  font-size: 1.1rem; /* Slightly larger icon */
+  vertical-align: -2px; /* Align with text better */
 }
 
 /* Fix alignment issues with the navbar item */
