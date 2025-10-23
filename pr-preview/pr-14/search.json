@@ -1,0 +1,100 @@
+[
+  {
+    "objectID": "TESTING.html",
+    "href": "TESTING.html",
+    "title": "Testing the Favorites Extension",
+    "section": "",
+    "text": "♡\n          Add to Favorites"
+  },
+  {
+    "objectID": "TESTING.html#setup",
+    "href": "TESTING.html#setup",
+    "title": "Testing the Favorites Extension",
+    "section": "Setup",
+    "text": "Setup\n\nMake sure you have Quarto installed:\nquarto --version\nClone this repository:\ngit clone https://github.com/AshleyHenry15/favorites.git\ncd favorites\nPreview the demo site:\nquarto preview"
+  },
+  {
+    "objectID": "TESTING.html#test-cases",
+    "href": "TESTING.html#test-cases",
+    "title": "Testing the Favorites Extension",
+    "section": "Test Cases",
+    "text": "Test Cases\n\n1. Favorites Button Appearance\n\nTest: Verify that a heart icon (♡) appears in the top right corner of every page\nExpected: Heart icon is visible and positioned correctly on all pages\n\n\n\n2. Adding a Favorite\n\nTest: Click the heart icon on any page\nExpected:\n\nHeart icon should turn red (❤)\nText should change to “Remove from Favorites”\n\n\n\n\n3. Removing a Favorite\n\nTest: Click the red heart icon on a favorited page\nExpected:\n\nHeart icon should return to outline form (♡)\nText should change to “Add to Favorites”\n\n\n\n\n4. Favorites List Page\n\nTest: Navigate to the “My Favorites” page (via navbar)\nExpected:\n\nPage should display a list of all favorited pages\nIf no pages are favorited, it should show a “No favorites yet” message\n\n\n\n\n5. Removing from Favorites List\n\nTest: Add some pages to favorites, then visit the Favorites page and click the “×” button next to an item\nExpected:\n\nItem should be removed from the list\nIf visiting the page that was removed, its heart icon should be in outline form (♡)\n\n\n\n\n6. Persistence\n\nTest: Add some pages to favorites, then close the browser completely and reopen the site\nExpected:\n\nFavorited pages should still show red hearts (❤)\nFavorites list should still contain all previously favorited pages\n\n\n\n\n7. Mobile Responsiveness\n\nTest: View the site on a mobile device or using browser developer tools mobile view\nExpected:\n\nFavorites button should be positioned properly and be usable\nFavorites list should be readable and functional"
+  },
+  {
+    "objectID": "TESTING.html#debugging",
+    "href": "TESTING.html#debugging",
+    "title": "Testing the Favorites Extension",
+    "section": "Debugging",
+    "text": "Debugging\nIf you encounter issues:\n\nCheck browser console for JavaScript errors\nVerify localStorage is working by running in console:\nconsole.log(localStorage.getItem('quarto-favorites'))\nCheck that CSS and JavaScript are properly loaded in the browser"
+  },
+  {
+    "objectID": "TESTING.html#report-issues",
+    "href": "TESTING.html#report-issues",
+    "title": "Testing the Favorites Extension",
+    "section": "Report Issues",
+    "text": "Report Issues\nIf you find bugs or have suggestions, please open an issue on GitHub."
+  },
+  {
+    "objectID": "favorites.html",
+    "href": "favorites.html",
+    "title": "Favorites Extension Demo",
+    "section": "",
+    "text": "♡\n          Add to Favorites\n        \n      \n    \n        \n          My Favorites\n          \n            \n            No favorites yet. Browse the site and click the heart icon to add pages to your favorites.\n          \n        \n      \n\n\n\n\nThis page displays all your favorited pages from this website.\nClick the heart icon (♡) on any page to add it to your favorites. The heart will turn red (❤) when a page is in your favorites. Your favorites will be displayed here and persist even if you close your browser.\nTo remove a page from your favorites, either: 1. Click the heart icon again on that page 2. Click the “×” button next to the page in the list above\nsomething to test"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Favorites Extension Demo",
+    "section": "",
+    "text": "♡\n          Add to Favorites"
+  },
+  {
+    "objectID": "index.html#welcome-to-the-favorites-extension-demo",
+    "href": "index.html#welcome-to-the-favorites-extension-demo",
+    "title": "Favorites Extension Demo",
+    "section": "Welcome to the Favorites Extension Demo!",
+    "text": "Welcome to the Favorites Extension Demo!\nThis is a demonstration of the Quarto Favorites Extension, which allows users to save their favorite pages for easy access later.\n\nHow to Use\n\nClick the heart icon (♡) in the top right corner of any page to add it to your favorites\nThe heart will turn red (❤) when a page is in your favorites\nVisit the My Favorites page to see all your favorited pages\nYour favorites will persist even if you close your browser\n\n\n\nTry it out!\nBrowse through the pages of this demo site and try favoriting some pages. Then check your My Favorites page to see them all in one place!\n\n\nFeatures\n\nSimple, intuitive interface\nPersistent storage using browser localStorage\nWorks with any Quarto website"
+  },
+  {
+    "objectID": "example.html",
+    "href": "example.html",
+    "title": "Favorites Extension Example",
+    "section": "",
+    "text": "♡\n          Add to Favorites"
+  },
+  {
+    "objectID": "example.html#favorites-extension-example",
+    "href": "example.html#favorites-extension-example",
+    "title": "Favorites Extension Example",
+    "section": "Favorites Extension Example",
+    "text": "Favorites Extension Example\nThis document demonstrates how to use the Favorites extension for Quarto.\n\nFeatures\n\nAdd a favorites button (heart icon) to each page\nSave favorites to browser localStorage\nDisplay a list of favorites on a dedicated page\n\n\n\nHow to Use\n\nInstall the extension with quarto add AshleyHenry15/favorites\nThe favorites button will appear automatically on each page\nCreate a favorites list page with favorites_list: true in the YAML front matter\n\n\n\nCreating a Favorites Page\nTo create a page that displays all your favorites, create a new Quarto document with:\n---\ntitle: \"My Favorites\"\nfavorites_list: true\n---\n\nThis page shows all your favorited pages."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About the Favorites Extension",
+    "section": "",
+    "text": "♡\n          Add to Favorites"
+  },
+  {
+    "objectID": "about.html#about-the-quarto-favorites-extension",
+    "href": "about.html#about-the-quarto-favorites-extension",
+    "title": "About the Favorites Extension",
+    "section": "About the Quarto Favorites Extension",
+    "text": "About the Quarto Favorites Extension\nThis extension adds a simple but powerful feature to Quarto websites: the ability for users to bookmark or “favorite” pages for easy access later.\n\nWhy Create This Extension?\nWhen browsing large documentation sites or complex websites, users often need to return to specific pages repeatedly. The Favorites extension provides a way for users to create their own personalized collection of important pages.\n\n\nHow It Works\nThe extension uses the browser’s localStorage to store the user’s favorites. This means:\n\nFavorites persist even after the browser is closed\nNo server-side processing is required\nThe solution works with static Quarto websites\nEach user’s favorites are stored on their own device\n\n\n\nTechnical Implementation\nThe extension consists of:\n\nLua filters that inject JavaScript, CSS, and HTML into pages\nClient-side JavaScript for managing favorites\nCSS for styling the favorites button and list\n\nSince Quarto generates static websites, all favorites functionality runs entirely in the user’s browser."
+  },
+  {
+    "objectID": "features.html",
+    "href": "features.html",
+    "title": "Features and Benefits",
+    "section": "",
+    "text": "♡\n          Add to Favorites"
+  },
+  {
+    "objectID": "features.html#features-of-the-quarto-favorites-extension",
+    "href": "features.html#features-of-the-quarto-favorites-extension",
+    "title": "Features and Benefits",
+    "section": "Features of the Quarto Favorites Extension",
+    "text": "Features of the Quarto Favorites Extension\n\nUser Features\n\nSimple Favoriting: One-click to add/remove pages from favorites\nVisual Feedback: Heart icon turns red when a page is favorited\nCentralized Access: All favorites are accessible from one page\nPersistence: Favorites are saved between browser sessions\nEasy Removal: Remove favorites directly from the list\n\n\n\nTechnical Features\n\nNo Dependencies: Works with any Quarto website without additional dependencies\nClient-Side Storage: Uses browser localStorage for persistence\nMinimal Footprint: Lightweight implementation\nEasy Installation: Simple installation via quarto add\nCustomizable: Easily style the components with CSS\n\n\n\nBenefits\n\nFor Users\n\nSave time finding frequently used pages\nCreate a personalized collection of important content\nAccess important pages without searching or navigating complex menus\n\n\n\nFor Website Owners\n\nEnhance user experience with a useful feature\nEncourage return visits to your site\nProvide value without requiring backend infrastructure\n\n\n\n\nImplementation Details\nThe extension automatically injects:\n\nA favorites button on every page\nA favorites list component on a dedicated page\nThe necessary JavaScript for managing favorites\nCSS styles for the favorites components\n\nAll that’s required is to include the extension in your Quarto project and create a page with favorites_list: true in the YAML front matter."
+  }
+]
