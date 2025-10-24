@@ -1,6 +1,17 @@
 # Quarto Favorites Extension
 
-A Quarto extension that allows users to "favorite" pages in a Quarto website. Favorites are saved to the browser's localStorage and persist across sessions. The main branch is automatically deployed to GitHub Pages.
+A Quarto extension that allows users to "favorite" pages in a Quarto website. Favorites are saved to the browser's localStorage and persist across sessions.
+
+## Overview
+
+The Quarto Favorites extension enhances your Quarto website by adding the ability for users to:
+
+- Save their favorite pages for quick access later
+- Organize favorites using section dividers
+- Export and import their favorites for backup or transfer to other devices
+- Access their top 5 favorites from any page via a collapsible sidebar panel
+
+This extension is ideal for complex documentation sites, educational resources, or any Quarto website where users might want to bookmark specific pages for reference.
 
 ## Installation
 
@@ -28,6 +39,19 @@ filters:
 Once the extension is installed, a favorites button (heart icon) will automatically appear on the top right corner of every page in your Quarto website.
 
 Users can click on this button to add or remove the current page from their favorites. When a page is added to favorites, the heart icon turns red.
+
+### Excluding Pages from Favorites
+
+If you want to exclude specific pages (like landing pages or index pages) from having the favorites button, add the following to the YAML front matter of those pages:
+
+```yaml
+---
+title: "My Page"
+no_favorites_button: true
+---
+```
+
+This will prevent the favorites button from appearing on that specific page, making it impossible to add to favorites.
 
 ### Creating a Favorites Page
 
@@ -86,7 +110,39 @@ The exported JSON file includes metadata like export date and version informatio
 
 ## Customization
 
-You can customize the appearance of the favorites button and list by adding custom CSS rules to your Quarto project.
+### CSS Customization
+
+You can customize the appearance of the favorites button and list by adding custom CSS rules to your Quarto project. For example, you could add the following CSS to your project's `styles.css` file to modify the favorites button appearance:
+
+```css
+/* Change the favorites button size */
+.favorites-button {
+  width: 36px;
+  height: 36px;
+}
+
+/* Change the heart icon color when favorited */
+.favorites-button.favorited .favorites-icon {
+  fill: #9c27b0;  /* Use purple instead of default red */
+  stroke: #9c27b0;
+}
+
+/* Style section dividers */
+.section-divider {
+  background-color: #f0f8ff;  /* Light blue background */
+  border-left: 3px solid #0d6efd;  /* Blue accent border */
+}
+```
+
+### Advanced Configuration
+
+Beyond the basic YAML options, you can further customize the extension's behavior by modifying the extension files directly in the `_extensions/favorites/` directory of your project.
+
+For example, to change the number of favorites shown in the sidebar from the default 5 to a different number:
+
+1. Edit `_extensions/favorites/favorites.js`
+2. Find the line with `const SIDEBAR_FAVORITES_LIMIT = 5;`
+3. Change the value to your preferred number
 
 ## Browser Compatibility
 

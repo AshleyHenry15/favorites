@@ -1,5 +1,6 @@
 ---
 title: "Favorites Extension Demo"
+no_favorites_button: true
 ---
 
 ## Welcome to the Favorites Extension Demo!
