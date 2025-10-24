@@ -85,14 +85,14 @@ function Pandoc(doc)
       -- Replace the favorites page link placeholder with actual path
       sidebar_html = sidebar_html:gsub("{%$favorites_page_link%$}", favorites_page_path)
 
-      -- Use JavaScript to inject the sidebar
+      -- Use JavaScript to inject the sidebar and ensure it's populated
       quarto.doc.include_text("after-body", [[
         <script>
           document.addEventListener("DOMContentLoaded", function() {
             console.log("Favorites extension: Looking for sidebar");
 
-            // Wait a short time to ensure Quarto has built the sidebar
-            setTimeout(function() {
+            // Function to insert the sidebar and populate it
+            function insertAndPopulateSidebar() {
               // Find the sidebar using Quarto's margin sidebar ID
               let rightSidebar = document.querySelector("#quarto-margin-sidebar");
 
@@ -121,12 +121,45 @@ function Pandoc(doc)
 
               if (rightSidebar) {
                 console.log("Inserting favorites into sidebar");
-                // Insert the favorites section into the sidebar
-                rightSidebar.insertAdjacentHTML("beforeend", `]] .. sidebar_html .. [[`);
+                // Only insert if not already present
+                if (!document.getElementById("sidebar-favorites")) {
+                  // Insert the favorites section into the sidebar
+                  rightSidebar.insertAdjacentHTML("beforeend", `]] .. sidebar_html .. [[`);
+
+                  // Now call the function to populate the sidebar favorites
+                  // Wait a tiny bit to ensure the DOM has updated
+                  setTimeout(function() {
+                    if (typeof populateFavoritesSidebar === 'function') {
+                      console.log("Calling populateFavoritesSidebar");
+                      populateFavoritesSidebar();
+                    } else {
+                      console.warn("populateFavoritesSidebar function not available yet");
+                    }
+                  }, 50);
+                }
               } else {
                 console.warn("Could not find sidebar to insert favorites");
               }
-            }, 500); // 500ms delay to ensure sidebar is built
+            }
+
+            // Try immediately and also with a delay to ensure Quarto has built the sidebar
+            insertAndPopulateSidebar();
+
+            // Also try again after a delay in case the sidebar isn't ready yet
+            setTimeout(insertAndPopulateSidebar, 500);
+
+            // And one more time for good measure (some themes load slowly)
+            setTimeout(insertAndPopulateSidebar, 1000);
+
+            // Handle page show events (back/forward navigation) to ensure sidebar is populated
+            window.addEventListener("pageshow", function() {
+              console.log("Page show event - repopulating sidebar");
+              setTimeout(function() {
+                if (typeof populateFavoritesSidebar === 'function' && document.getElementById("sidebar-favorites")) {
+                  populateFavoritesSidebar();
+                }
+              }, 100);
+            });
           });
         </script>
       ]])
