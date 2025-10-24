@@ -59,11 +59,32 @@ function Pandoc(doc)
     -- Add the button HTML in a valid location
     quarto.doc.include_text("before-body", button_html)
 
-    -- If this is a favorites list page, add the favorites list HTML
+    -- If this is a favorites list page, add the favorites list HTML with export/import functionality
     if doc.meta.favorites_list then
       local list_html = [[
         <div class="favorites-list-container">
-          <h2>My Favorites</h2>
+          <div class="favorites-header">
+            <h2>My Favorites</h2>
+            <div class="favorites-actions">
+              <button id="export-favorites" class="favorites-action-button" title="Export your favorites as a file">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Export</span>
+              </button>
+              <label id="import-favorites-label" class="favorites-action-button" title="Import favorites from a file">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Import</span>
+                <input type="file" id="import-favorites" accept=".json" style="display: none;">
+              </label>
+            </div>
+          </div>
           <div id="favorites-list">
             <!-- Favorites will be dynamically inserted here by JavaScript -->
             <p class="no-favorites-message">No favorites yet. Browse the site and click the heart icon to add pages to your favorites.</p>

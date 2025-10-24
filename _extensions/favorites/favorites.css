@@ -72,9 +72,46 @@
   border: 1px solid #dee2e6;
 }
 
-.favorites-list-container h2 {
-  margin-top: 0;
+/* Header with actions */
+.favorites-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.favorites-header h2 {
+  margin: 0;
   color: #212529;
+}
+
+.favorites-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.favorites-action-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  color: #495057;
+}
+
+.favorites-action-button:hover {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+}
+
+.favorites-action-button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .no-favorites-message {
@@ -121,4 +158,26 @@
 
 .remove-favorite:hover {
   color: #dc3545;
+}
+
+/* External link styles */
+.external-favorite {
+  background-color: #fff8f8; /* Very light pink background */
+  border-left: 3px solid #dc3545; /* Red left border */
+}
+
+.external-warning {
+  margin-right: 5px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.external-link {
+  display: flex;
+  align-items: center;
+  color: #dc3545; /* Red text color */
+}
+
+.external-link:hover {
+  color: #a71d2a; /* Darker red on hover */
 }
