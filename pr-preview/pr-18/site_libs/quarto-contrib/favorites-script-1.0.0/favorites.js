@@ -24,6 +24,20 @@ function normalizeUrl(url) {
   }
 }
 
+// Check if a URL belongs to the current website
+function isUrlFromCurrentSite(url) {
+  if (!url) return false;
+
+  try {
+    const currentHost = window.location.hostname;
+    const urlObj = new URL(url);
+    return urlObj.hostname === currentHost;
+  } catch (e) {
+    console.warn('Failed to check URL:', url);
+    return false;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize the favorites system
   initFavorites();
@@ -200,6 +214,22 @@ function populateFavoritesList() {
     link.href = favorite.url;
     link.textContent = favorite.title;
 
+    // Check if the URL belongs to the current site
+    const isInternal = isUrlFromCurrentSite(favorite.url);
+    if (!isInternal) {
+      li.classList.add('external-favorite');
+
+      // Add warning icon
+      const warningIcon = document.createElement('span');
+      warningIcon.className = 'external-warning';
+      warningIcon.title = 'This link is from another website and may not work in this context';
+      warningIcon.innerHTML = '⚠️';
+
+      // Insert warning icon before link text
+      link.prepend(warningIcon);
+      link.classList.add('external-link');
+    }
+
     const removeBtn = document.createElement('button');
     removeBtn.className = 'remove-favorite';
     removeBtn.innerHTML = '&times;';
@@ -324,6 +354,31 @@ function handleImport(importedFavorites) {
     return;
   }
 
+  // Check for favorites that don't match the current site
+  const externalLinks = [];
+  const internalLinks = [];
+  importedFavorites.forEach(fav => {
+    if (isUrlFromCurrentSite(fav.url)) {
+      internalLinks.push(fav);
+    } else {
+      externalLinks.push(fav);
+    }
+  });
+
+  // If all links are external, warn the user
+  if (internalLinks.length === 0 && externalLinks.length > 0) {
+    alert(`Warning: None of the ${externalLinks.length} imported favorites match pages on this site. These favorites may be from a different website.`);
+
+    // Ask if they still want to import them
+    if (!confirm('Do you still want to import these external favorites? They will be marked with a warning icon in your favorites list.')) {
+      return; // User cancelled import
+    }
+  }
+  // If there's a mix of internal and external links
+  else if (externalLinks.length > 0) {
+    alert(`Note: ${externalLinks.length} out of ${importedFavorites.length} imported favorites appear to be from other websites and may not work on this site. External links will be marked with a warning icon in your favorites list.`);
+  }
+
   const currentFavorites = getFavorites();
 
   // If current favorites exist, ask user if they want to merge or replace
@@ -342,16 +397,34 @@ function handleImport(importedFavorites) {
       });
 
       saveFavorites(mergedFavorites);
-      alert(`Successfully merged ${importedFavorites.length} favorites (${mergedFavorites.length - currentFavorites.length} new added).`);
+
+      // Show appropriate success message based on internal vs external links
+      if (externalLinks.length > 0) {
+        alert(`Successfully merged ${importedFavorites.length} favorites (${mergedFavorites.length - currentFavorites.length} new added, ${externalLinks.length} from external sites).`);
+      } else {
+        alert(`Successfully merged ${importedFavorites.length} favorites (${mergedFavorites.length - currentFavorites.length} new added).`);
+      }
     } else {
       // Replace all favorites
       saveFavorites(importedFavorites);
-      alert(`Replaced all favorites with ${importedFavorites.length} imported favorites.`);
+
+      // Show appropriate success message based on internal vs external links
+      if (externalLinks.length > 0) {
+        alert(`Replaced all favorites with ${importedFavorites.length} imported favorites (${externalLinks.length} from external sites).`);
+      } else {
+        alert(`Replaced all favorites with ${importedFavorites.length} imported favorites.`);
+      }
     }
   } else {
     // No current favorites, just save the imported ones
     saveFavorites(importedFavorites);
-    alert(`Successfully imported ${importedFavorites.length} favorites.`);
+
+    // Show appropriate success message based on internal vs external links
+    if (externalLinks.length > 0) {
+      alert(`Successfully imported ${importedFavorites.length} favorites (${externalLinks.length} from external sites).`);
+    } else {
+      alert(`Successfully imported ${importedFavorites.length} favorites.`);
+    }
   }
 
   // Refresh the favorites list display

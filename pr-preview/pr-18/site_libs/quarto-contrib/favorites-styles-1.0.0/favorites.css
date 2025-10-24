@@ -159,3 +159,25 @@
 .remove-favorite:hover {
   color: #dc3545;
 }
+
+/* External link styles */
+.external-favorite {
+  background-color: #fff8f8; /* Very light pink background */
+  border-left: 3px solid #dc3545; /* Red left border */
+}
+
+.external-warning {
+  margin-right: 5px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.external-link {
+  display: flex;
+  align-items: center;
+  color: #dc3545; /* Red text color */
+}
+
+.external-link:hover {
+  color: #a71d2a; /* Darker red on hover */
+}
