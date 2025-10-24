@@ -206,13 +206,30 @@ function populateFavoritesList() {
   // Create a list of favorites
   const ul = document.createElement('ul');
   ul.className = 'favorites-items';
+  // Enable drag and drop
+  ul.setAttribute('data-draggable-list', true);
 
-  favorites.forEach(favorite => {
+  favorites.forEach((favorite, index) => {
     const li = document.createElement('li');
+
+    // Set drag attributes
+    li.setAttribute('draggable', true);
+    li.setAttribute('data-index', index);
+    li.classList.add('draggable-item');
+
+    // Add drag handle
+    const dragHandle = document.createElement('div');
+    dragHandle.className = 'drag-handle';
+    dragHandle.innerHTML = '⋮⋮';
+    dragHandle.title = 'Drag to reorder';
 
     const link = document.createElement('a');
     link.href = favorite.url;
     link.textContent = favorite.title;
+
+    // Wrap link in a container for better layout control
+    const linkContainer = document.createElement('div');
+    linkContainer.className = 'favorite-link-container';
 
     // Check if the URL belongs to the current site
     const isInternal = isUrlFromCurrentSite(favorite.url);
@@ -230,6 +247,8 @@ function populateFavoritesList() {
       link.classList.add('external-link');
     }
 
+    linkContainer.appendChild(link);
+
     const removeBtn = document.createElement('button');
     removeBtn.className = 'remove-favorite';
     removeBtn.innerHTML = '&times;';
@@ -246,12 +265,29 @@ function populateFavoritesList() {
       }
     });
 
-    li.appendChild(link);
+    // Add event listeners for drag and drop
+    li.addEventListener('dragstart', handleDragStart);
+    li.addEventListener('dragover', handleDragOver);
+    li.addEventListener('dragenter', handleDragEnter);
+    li.addEventListener('dragleave', handleDragLeave);
+    li.addEventListener('drop', handleDrop);
+    li.addEventListener('dragend', handleDragEnd);
+
+    li.appendChild(dragHandle);
+    li.appendChild(linkContainer);
     li.appendChild(removeBtn);
     ul.appendChild(li);
   });
 
   favoritesList.appendChild(ul);
+
+  // Add a message about drag-and-drop
+  if (favorites.length > 1) {
+    const reorderMsg = document.createElement('p');
+    reorderMsg.className = 'reorder-message';
+    reorderMsg.textContent = 'Tip: Drag and drop items to reorder your favorites.';
+    favoritesList.appendChild(reorderMsg);
+  }
 }
 
 // Remove a favorite by URL
@@ -449,4 +485,92 @@ function updateCurrentPageButton() {
 
   // Update button appearance
   updateFavoriteButton(button, isFavorited);
+}
+
+// Drag and drop functionality
+let draggedItem = null;
+let dragSourceIndex = -1;
+
+// Handle drag start event
+function handleDragStart(e) {
+  // Set the item being dragged
+  draggedItem = this;
+  dragSourceIndex = parseInt(this.getAttribute('data-index'), 10);
+
+  // Set drag effect and add dragging class
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', dragSourceIndex);
+  this.classList.add('dragging');
+
+  // Set a timeout to add a class that will apply transition effects only after dragging starts
+  setTimeout(() => {
+    document.querySelectorAll('.draggable-item').forEach(item => {
+      if (item !== draggedItem) {
+        item.classList.add('drag-animation');
+      }
+    });
+  }, 0);
+
+  return true;
+}
+
+// Handle drag over event
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+  e.dataTransfer.dropEffect = 'move';
+  return false;
+}
+
+// Handle drag enter event
+function handleDragEnter(e) {
+  this.classList.add('drag-over');
+}
+
+// Handle drag leave event
+function handleDragLeave(e) {
+  this.classList.remove('drag-over');
+}
+
+// Handle drop event
+function handleDrop(e) {
+  if (e.stopPropagation) {
+    e.stopPropagation();
+  }
+
+  if (draggedItem && draggedItem !== this) {
+    // Get the destination index
+    const targetIndex = parseInt(this.getAttribute('data-index'), 10);
+
+    // Reorder the favorites array
+    const favorites = getFavorites();
+    const itemToMove = favorites[dragSourceIndex];
+
+    // Remove the item from its original position
+    favorites.splice(dragSourceIndex, 1);
+
+    // Insert at new position
+    favorites.splice(targetIndex, 0, itemToMove);
+
+    // Save the reordered favorites
+    saveFavorites(favorites);
+
+    // Refresh the list
+    populateFavoritesList();
+  }
+
+  return false;
+}
+
+// Handle drag end event
+function handleDragEnd(e) {
+  // Remove visual classes
+  document.querySelectorAll('.draggable-item').forEach(item => {
+    item.classList.remove('dragging', 'drag-over', 'drag-animation');
+  });
+
+  // Reset the dragged item reference
+  draggedItem = null;
+  dragSourceIndex = -1;
 }
