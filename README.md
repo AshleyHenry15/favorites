@@ -44,6 +44,10 @@ This page displays all your favorited pages from this website.
 
 The `favorites_list: true` parameter tells the extension to display the favorites list on this page.
 
+### Sidebar Favorites
+
+The extension automatically adds a collapsible "My Favorites" section to the sidebar (if available), showing up to 5 of your favorited pages for quick access from any page. Click "View All Favorites" to see your complete favorites list.
+
 ## Link to the favorites page
 
 In the `_quarto.yml` add:
@@ -107,6 +111,17 @@ Users can easily customize the order of their favorites using drag-and-drop:
 - Drag the handle (⋮⋮) next to any favorite to move it to a new position
 - The order is automatically saved and persists across browsing sessions
 - This allows users to organize their favorites in order of importance or by any other preferred arrangement
+
+## Organizing with Sections
+
+Users can organize their favorites into logical groups using section dividers:
+
+1. **Adding Sections**: Click the "Add Section" button on the favorites page
+2. **Positioning**: Drag section dividers to create visual groupings of favorites
+3. **Editing**: Click the edit (✎) button to rename a section
+4. **Removing**: Click the × button to remove a section
+
+Section dividers are visual elements that help organize the favorites list without changing how favorites function. They can be positioned anywhere in the list, and users can drag favorites between sections to create meaningful groups.
 
 ## License
 
