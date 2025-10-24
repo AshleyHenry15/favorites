@@ -160,6 +160,45 @@ The extension consists of:
 
 Since Quarto generates static websites, the favorites functionality runs entirely in the user's browser, with no server-side processing required.
 
+### Technical Details
+
+The extension adds the following components to your Quarto website:
+
+- **Favorites Button**: A heart icon button positioned in the top right corner of each page.
+- **Sidebar Panel**: A collapsible panel in the sidebar showing the top 5 favorites.
+- **Favorites Page**: A dedicated page showing all favorites with organization options.
+
+The extension respects Quarto's theme system and uses CSS variables when available for consistent styling across different themes.
+
+## Theme Compatibility
+
+This extension has been tested with various Quarto themes including:
+
+- Default theme
+- Cosmo
+- Bootstrap
+- Sandstone
+- And other Bootstrap-based themes
+
+The extension should work with any theme that:
+- Uses standard Bootstrap CSS variables
+- Has a sidebar element that can be identified
+
+The favorites button automatically positions itself within the title block of the page, and the sidebar panel integrates with existing sidebar containers.
+
+## Usage Tips
+
+- **For Site Authors**:
+  - Add the favorites page to your site navigation for easy access
+  - Consider excluding index/home pages from favorites to reduce clutter
+  - Use custom CSS to match your site's color scheme
+
+- **For Site Users**:
+  - Use section dividers to organize favorites by topic or importance
+  - Export favorites occasionally as a backup
+  - The sidebar shows only 5 favorites - use the full favorites page for complete access
+  - Reorder favorites by dragging them to keep the most important ones in the sidebar
+
 ## Reordering Favorites
 
 Users can easily customize the order of their favorites using drag-and-drop:
@@ -178,6 +217,26 @@ Users can organize their favorites into logical groups using section dividers:
 4. **Removing**: Click the × button to remove a section
 
 Section dividers are visual elements that help organize the favorites list without changing how favorites function. They can be positioned anywhere in the list, and users can drag favorites between sections to create meaningful groups.
+
+## Frequently Asked Questions
+
+### Can users share their favorites with other users?
+Yes, users can export their favorites to a JSON file and share that file with others. Other users can then import the shared favorites file into their own browser.
+
+### Can I change how many favorites appear in the sidebar?
+Yes, you can modify the `SIDEBAR_FAVORITES_LIMIT` constant in the `favorites.js` file to change the number of favorites shown in the sidebar.
+
+### Does this extension work with Quarto books and other formats?
+The extension is designed primarily for Quarto websites. It should work with Quarto books as well, but may require additional customization for other formats.
+
+### What happens when a user adds too many favorites?
+There's no limit to how many favorites a user can add. However, only the first 5 (by default) will appear in the sidebar. All favorites are always accessible from the favorites page.
+
+### Can I disable the favorites sidebar while keeping the button?
+Not directly through configuration, but you could customize the extension files to remove the sidebar injection code while keeping the favorites button functionality.
+
+### Where are favorites stored?
+Favorites are stored in the user's browser using localStorage. They persist across browser sessions but are specific to each browser and device.
 
 ## License
 
