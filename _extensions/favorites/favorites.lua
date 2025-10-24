@@ -19,6 +19,17 @@ function json_encode(val)
   end
 end
 
+-- Read the sidebar template
+function read_file(path)
+  local file = io.open(path, "r")
+  if file then
+    local content = file:read("*all")
+    file:close()
+    return content
+  end
+  return nil
+end
+
 -- Main filter function
 function Pandoc(doc)
   -- Only process HTML documents
@@ -42,6 +53,28 @@ function Pandoc(doc)
       title = pandoc.utils.stringify(doc.meta.title)
     end
 
+    -- Get path to favorites page
+    -- Ensure path is properly formatted to avoid 404 errors
+    local favorites_page_path = "favorites.html"
+    if quarto.project and quarto.project.offset then
+      local offset = quarto.project.offset
+
+      -- Remove any leading dot to avoid URL issues
+      if offset:sub(1, 1) == "." then
+        offset = offset:sub(2)
+      end
+
+      -- Ensure there's a forward slash between the offset and filename
+      if offset ~= "" and offset:sub(-1) ~= "/" then
+        offset = offset .. "/"
+      end
+
+      favorites_page_path = offset .. "favorites.html"
+    end
+
+    -- For debugging
+    -- print("Favorites page path: " .. favorites_page_path)
+
     -- Create page info as JSON
     local page_info = json_encode({title = title})
 
@@ -58,6 +91,95 @@ function Pandoc(doc)
 
     -- Add the button HTML in a valid location
     quarto.doc.include_text("before-body", button_html)
+
+    -- Add sidebar favorites (if not on the favorites page itself)
+    if not doc.meta.favorites_list then
+      -- Read in the sidebar HTML template
+      local sidebar_template_path = quarto.utils.resolve_path("favorites-sidebar.html")
+      local sidebar_html = read_file(sidebar_template_path) or ""
+
+      -- Replace the favorites page link placeholder with actual path
+      sidebar_html = sidebar_html:gsub("{%$favorites_page_link%$}", favorites_page_path)
+
+      -- Use JavaScript to inject the sidebar and ensure it's populated
+      quarto.doc.include_text("after-body", [[
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            console.log("Favorites extension: Looking for sidebar");
+
+            // Function to insert the sidebar and populate it
+            function insertAndPopulateSidebar() {
+              // Find the sidebar using Quarto's margin sidebar ID
+              let rightSidebar = document.querySelector("#quarto-margin-sidebar");
+
+              // Try alternative selectors if the first one fails
+              if (!rightSidebar) {
+                console.log("Trying alternative selectors");
+                const possibleSelectors = [
+                  ".sidebar-right",
+                  ".sidebar-navigation",
+                  ".sidebar-menu",
+                  ".sidebar.sidebar-navigation",
+                  ".col-lg-2.sidebar",
+                  "[role='complementary']",
+                  "#TOC"
+                ];
+
+                for (const selector of possibleSelectors) {
+                  const element = document.querySelector(selector);
+                  if (element) {
+                    console.log("Found sidebar with selector:", selector);
+                    rightSidebar = element;
+                    break;
+                  }
+                }
+              }
+
+              if (rightSidebar) {
+                console.log("Inserting favorites into sidebar");
+                // Only insert if not already present
+                if (!document.getElementById("sidebar-favorites")) {
+                  // Insert the favorites section into the sidebar
+                  rightSidebar.insertAdjacentHTML("beforeend", `]] .. sidebar_html .. [[`);
+
+                  // Now call the function to populate the sidebar favorites
+                  // Wait a tiny bit to ensure the DOM has updated
+                  setTimeout(function() {
+                    if (typeof populateFavoritesSidebar === 'function') {
+                      console.log("Calling populateFavoritesSidebar");
+                      populateFavoritesSidebar();
+                    } else {
+                      console.warn("populateFavoritesSidebar function not available yet");
+                    }
+                  }, 50);
+                }
+              } else {
+                console.warn("Could not find sidebar to insert favorites");
+              }
+            }
+
+            // Try immediately and also with a delay to ensure Quarto has built the sidebar
+            insertAndPopulateSidebar();
+
+            // Also try again after a delay in case the sidebar isn't ready yet
+            setTimeout(insertAndPopulateSidebar, 500);
+
+            // And one more time for good measure (some themes load slowly)
+            setTimeout(insertAndPopulateSidebar, 1000);
+
+            // Handle page show events (back/forward navigation) to ensure sidebar is populated
+            window.addEventListener("pageshow", function() {
+              console.log("Page show event - repopulating sidebar");
+              setTimeout(function() {
+                if (typeof populateFavoritesSidebar === 'function' && document.getElementById("sidebar-favorites")) {
+                  populateFavoritesSidebar();
+                }
+              }, 100);
+            });
+          });
+        </script>
+      ]])
+    end
 
     -- If this is a favorites list page, add the favorites list HTML with export/import functionality
     if doc.meta.favorites_list then
@@ -87,7 +209,7 @@ function Pandoc(doc)
           </div>
           <div id="favorites-list">
             <!-- Favorites will be dynamically inserted here by JavaScript -->
-            <p class="no-favorites-message">No favorites yet. Browse the site and click the heart icon to add pages to your favorites.</p>
+            <p class="no-favorites-message">No favorites yet.</p>
           </div>
         </div>
       ]]

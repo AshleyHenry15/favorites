@@ -39,11 +39,48 @@ function isUrlFromCurrentSite(url) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('Favorites extension: DOM Content loaded');
+
   // Initialize the favorites system
   initFavorites();
 
   // Position the favorites button within the title block
   positionFavoritesButton();
+
+  // Attempt to populate the sidebar directly as well
+  // This may fail if the sidebar isn't ready yet, but that's okay
+  // The sidebar will be populated by the injected script as well
+  setTimeout(populateFavoritesSidebar, 300);
+});
+
+// Add event listeners for page navigation in Quarto
+document.addEventListener('DOMContentLoaded', function() {
+  // For Quarto's navigation system (if it exists)
+  if (window.quartoNavigationListener) {
+    console.log('Favorites extension: Quarto navigation listener found, adding to it');
+    const originalListener = window.quartoNavigationListener;
+
+    window.quartoNavigationListener = function(e) {
+      // Call the original listener first
+      originalListener(e);
+
+      // Then repopulate our sidebar
+      console.log('Favorites extension: Quarto navigation event - repopulating sidebar');
+      setTimeout(populateFavoritesSidebar, 300);
+    };
+  }
+
+  // For standard navigation events
+  window.addEventListener('popstate', function() {
+    console.log('Favorites extension: Popstate event - repopulating sidebar');
+    setTimeout(populateFavoritesSidebar, 300);
+  });
+
+  // For page shows (which happen when navigating back/forward)
+  window.addEventListener('pageshow', function() {
+    console.log('Favorites extension: Pageshow event - repopulating sidebar');
+    setTimeout(populateFavoritesSidebar, 300);
+  });
 });
 
 // Position the favorites button near the title
@@ -76,6 +113,9 @@ function initFavorites() {
 
   // Populate the favorites list if on the favorites page
   populateFavoritesList();
+
+  // Populate the favorites sidebar if it exists
+  populateFavoritesSidebar();
 
   // Setup export/import functionality
   setupExportImport();
@@ -144,8 +184,11 @@ function toggleFavorite(pageInfo) {
   const normalizedUrl = normalizeUrl(pageInfo.url);
   const index = favorites.findIndex(fav => normalizeUrl(fav.url) === normalizedUrl);
 
+  let action = '';
+
   if (index === -1) {
     // Add to favorites
+    action = 'added';
     favorites.push({
       title: pageInfo.title,
       url: pageInfo.url,
@@ -153,11 +196,27 @@ function toggleFavorite(pageInfo) {
     });
   } else {
     // Remove from favorites
+    action = 'removed';
     favorites.splice(index, 1);
   }
 
   // Save updated favorites
   saveFavorites(favorites);
+
+  console.log(`Favorites extension: ${action} "${pageInfo.title}" ${action === 'added' ? 'to' : 'from'} favorites`);
+
+  // Ensure the sidebar is updated if it exists
+  populateFavoritesSidebar();
+
+  // Also trigger a custom event that other scripts might listen for
+  const event = new CustomEvent('favoriteChanged', {
+    detail: {
+      action: action,
+      pageInfo: pageInfo,
+      favorites: favorites
+    }
+  });
+  document.dispatchEvent(event);
 }
 
 // Get all favorites from localStorage
@@ -299,6 +358,9 @@ function removeFavorite(url) {
   if (index !== -1) {
     favorites.splice(index, 1);
     saveFavorites(favorites);
+
+    // Update sidebar if it exists
+    populateFavoritesSidebar();
   }
 }
 
@@ -463,10 +525,9 @@ function handleImport(importedFavorites) {
     }
   }
 
-  // Refresh the favorites list display
+  // Update all favorites displays
   populateFavoritesList();
-
-  // Update button on current page if it exists
+  populateFavoritesSidebar();
   updateCurrentPageButton();
 }
 
@@ -556,8 +617,9 @@ function handleDrop(e) {
     // Save the reordered favorites
     saveFavorites(favorites);
 
-    // Refresh the list
+    // Refresh all favorites displays
     populateFavoritesList();
+    populateFavoritesSidebar();
   }
 
   return false;
@@ -573,4 +635,93 @@ function handleDragEnd(e) {
   // Reset the dragged item reference
   draggedItem = null;
   dragSourceIndex = -1;
+}
+
+// Populate the favorites sidebar
+function populateFavoritesSidebar() {
+  console.log('Favorites extension: Populating sidebar');
+  const sidebarFavorites = document.getElementById('sidebar-favorites');
+  if (!sidebarFavorites) {
+    console.warn('Favorites extension: sidebar-favorites element not found');
+    // If the element doesn't exist but we're supposed to populate the sidebar,
+    // try again after a short delay
+    setTimeout(populateFavoritesSidebar, 500);
+    return;
+  }
+
+  const favorites = getFavorites();
+  console.log(`Favorites extension: Found ${favorites.length} favorites in localStorage`);
+
+  const noFavoritesMessage = sidebarFavorites.querySelector('.sidebar-no-favorites');
+
+  // Clear existing favorites except for the no-favorites message
+  Array.from(sidebarFavorites.children).forEach(child => {
+    if (!child.classList.contains('sidebar-no-favorites')) {
+      sidebarFavorites.removeChild(child);
+    }
+  });
+
+  // Show/hide no favorites message
+  if (favorites.length === 0) {
+    if (noFavoritesMessage) noFavoritesMessage.style.display = 'block';
+    return;
+  } else {
+    if (noFavoritesMessage) noFavoritesMessage.style.display = 'none';
+  }
+
+  // Create a list of favorites (limited to top 5)
+  const ul = document.createElement('ul');
+  ul.className = 'sidebar-favorites-items';
+
+  // Get top 5 favorites (or all if less than 5)
+  const topFavorites = favorites.slice(0, 5);
+  console.log(`Favorites extension: Displaying top ${topFavorites.length} favorites in sidebar`);
+
+  topFavorites.forEach((favorite, index) => {
+    console.log(`Favorites extension: Adding favorite ${index + 1}: ${favorite.title}`);
+    const li = document.createElement('li');
+    li.className = 'sidebar-favorite-item';
+
+    const link = document.createElement('a');
+    link.href = favorite.url;
+    link.textContent = favorite.title;
+    link.className = 'sidebar-favorite-link';
+
+    // Check if the URL belongs to the current site
+    const isInternal = isUrlFromCurrentSite(favorite.url);
+    if (!isInternal) {
+      li.classList.add('sidebar-external-favorite');
+
+      // Add warning icon
+      const warningIcon = document.createElement('span');
+      warningIcon.className = 'sidebar-external-warning';
+      warningIcon.title = 'This link is from another website';
+      warningIcon.innerHTML = '⚠️';
+
+      // Insert warning icon before link text
+      link.prepend(warningIcon);
+    }
+
+    li.appendChild(link);
+    ul.appendChild(li);
+  });
+
+  sidebarFavorites.appendChild(ul);
+  console.log('Favorites extension: Sidebar successfully populated');
+}
+
+// Export the populateFavoritesSidebar function to global scope
+// This ensures it's available for direct calling from injected scripts
+window.populateFavoritesSidebar = populateFavoritesSidebar;
+
+// Update all favorites displays when favorites change
+function updateFavoritesDisplays() {
+  // Update main favorites list if it exists
+  populateFavoritesList();
+
+  // Update sidebar if it exists
+  populateFavoritesSidebar();
+
+  // Update button on current page if it exists
+  updateCurrentPageButton();
 }
