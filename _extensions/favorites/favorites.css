@@ -319,13 +319,15 @@
 
 .sidebar-favorites-footer {
   margin-top: 0.75rem;
-  text-align: right;
+  text-align: left;
 }
 
 .sidebar-favorites-view-all {
   font-size: 0.75rem;
   color: #6c757d;
   text-decoration: none;
+  display: inline-block;
+  padding-left: 0;
 }
 
 .sidebar-favorites-view-all:hover {
