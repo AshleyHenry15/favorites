@@ -54,10 +54,26 @@ function Pandoc(doc)
     end
 
     -- Get path to favorites page
+    -- Ensure path is properly formatted to avoid 404 errors
     local favorites_page_path = "favorites.html"
     if quarto.project and quarto.project.offset then
-      favorites_page_path = quarto.project.offset .. "favorites.html"
+      local offset = quarto.project.offset
+
+      -- Remove any leading dot to avoid URL issues
+      if offset:sub(1, 1) == "." then
+        offset = offset:sub(2)
+      end
+
+      -- Ensure there's a forward slash between the offset and filename
+      if offset ~= "" and offset:sub(-1) ~= "/" then
+        offset = offset .. "/"
+      end
+
+      favorites_page_path = offset .. "favorites.html"
     end
+
+    -- For debugging
+    -- print("Favorites page path: " .. favorites_page_path)
 
     -- Create page info as JSON
     local page_info = json_encode({title = title})
