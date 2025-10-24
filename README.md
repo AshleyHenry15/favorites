@@ -71,6 +71,11 @@ When importing, users have the option to either:
 - Merge the imported favorites with their existing ones (avoiding duplicates)
 - Replace all existing favorites with the imported ones
 
+The extension validates imported favorites to check if they belong to the current website:
+- External links (from different websites) are highlighted with warning icons
+- Users receive notifications about the number of external links in their imports
+- Users can choose whether to include external links in their favorites list
+
 The exported JSON file includes metadata like export date and version information, along with the complete list of favorited pages (titles, URLs, and when they were added).
 
 ## Customization
