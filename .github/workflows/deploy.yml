@@ -54,11 +54,12 @@ jobs:
         with:
           path: _site
 
-      # For previews, we'll store the built site as a regular artifact
-      - name: Upload preview artifact
+      # For PR previews, we'll store the built site as a regular artifact
+      - name: Upload PR preview artifact
+        if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: preview-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'main' }}
+          name: pr-preview-${{ github.event.pull_request.number }}
           path: _site
           retention-days: 7
 
@@ -75,8 +76,9 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # Deploy preview (for both main branch and PRs)
+  # Deploy PR preview
   deploy-preview:
+    if: github.event_name == 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -85,59 +87,46 @@ jobs:
           ref: gh-pages
           fetch-depth: 0
 
-      # Download the preview artifact
-      - name: Download preview
+      # Download the PR preview artifact
+      - name: Download PR preview
         uses: actions/download-artifact@v4
         with:
-          name: preview-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'main' }}
-          path: preview-download
+          name: pr-preview-${{ github.event.pull_request.number }}
+          path: pr-preview-download
 
-      # Set up preview directory based on event type
+      # Set up preview directory
       - name: Set up preview directory
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            # PR preview
-            PR_NUMBER=${{ github.event.pull_request.number }}
-            PREVIEW_DIR="pr-preview/pr-${PR_NUMBER}"
-          else
-            # Main branch preview
-            PREVIEW_DIR="preview"
-          fi
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          PR_DIR="pr-preview/pr-${PR_NUMBER}"
 
           # Clean up existing preview
-          rm -rf "${PREVIEW_DIR}" || true
-          mkdir -p "${PREVIEW_DIR}"
+          rm -rf "${PR_DIR}" || true
+          mkdir -p "${PR_DIR}"
 
           # Move preview to target directory
-          cp -r preview-download/* "${PREVIEW_DIR}/"
+          cp -r pr-preview-download/* "${PR_DIR}/"
 
           # Clean up download directory
-          rm -rf preview-download
-
-          # Store the preview dir for later steps
-          echo "PREVIEW_DIR=${PREVIEW_DIR}" >> $GITHUB_ENV
+          rm -rf pr-preview-download
 
       # Commit and push preview
       - name: Commit and push
         run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          PR_DIR="pr-preview/pr-${PR_NUMBER}"
+
           git config user.name github-actions
           git config user.email github-actions@github.com
 
-          git add "${{ env.PREVIEW_DIR }}"
-
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            COMMIT_MSG="Update PR preview for #${{ github.event.pull_request.number }}"
-          else
-            COMMIT_MSG="Update preview for main branch"
-          fi
+          git add "${PR_DIR}"
 
           # Only commit if there are changes
-          git diff --staged --quiet || git commit -m "${COMMIT_MSG}"
+          git diff --staged --quiet || git commit -m "Update PR preview for #${PR_NUMBER}"
           git push
 
-      # For PRs only - find and update comment with preview link
+      # Find existing PR comment
       - name: Find Comment
-        if: github.event_name == 'pull_request'
         uses: peter-evans/find-comment@v2
         id: fc
         with:
@@ -146,8 +135,7 @@ jobs:
           body-includes: 'Preview deployed'
 
       # Add or update PR comment with preview link
-      - name: Create or update PR comment
-        if: github.event_name == 'pull_request'
+      - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v2
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}

@@ -12,10 +12,8 @@ Try out the extension with our [live demo](https://ashleyhenry15.github.io/favor
 
 This repository includes automatic preview deployments:
 
-- **Main branch**:
-  - Official release: [https://ashleyhenry15.github.io/favorites/](https://ashleyhenry15.github.io/favorites/)
-  - Latest preview: [https://ashleyhenry15.github.io/favorites/preview/](https://ashleyhenry15.github.io/favorites/preview/)
-- **Pull Requests**: Each PR gets its own preview deployment at `https://ashleyhenry15.github.io/favorites/pr-preview/pr-{number}/`
+- **Main branch**: Changes pushed to the main branch are automatically deployed to the [live demo site](https://ashleyhenry15.github.io/favorites/)
+- **Pull Requests**: Each PR gets its own preview deployment with a unique URL (provided in the PR comments)
 
 ## Installation
 
