@@ -8,13 +8,6 @@ A Quarto extension that allows users to "favorite" pages in a Quarto website. Fa
 
 Try out the extension with our [live demo](https://ashleyhenry15.github.io/favorites/)!
 
-### Preview Deployments
-
-This repository includes automatic preview deployments:
-
-- **Main branch**: Changes pushed to the main branch are automatically deployed to the [live demo site](https://ashleyhenry15.github.io/favorites/)
-- **Pull Requests**: Each PR gets its own preview deployment with a unique URL (provided in the PR comments)
-
 ## Installation
 
 You can install this extension in your Quarto project by using the following command:
