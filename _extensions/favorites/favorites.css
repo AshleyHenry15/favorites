@@ -237,3 +237,92 @@
   font-style: italic;
   text-align: center;
 }
+
+/* Sidebar Favorites Styles */
+.sidebar-section {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.sidebar-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-favorites {
+  margin-bottom: 0.75rem;
+}
+
+.sidebar-no-favorites {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.sidebar-favorites-items {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-favorite-item {
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.sidebar-favorite-item:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar-favorite-link {
+  display: inline-block;
+  text-decoration: none;
+  color: #0d6efd;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-favorite-link:hover {
+  text-decoration: underline;
+  color: #0a58ca;
+}
+
+.sidebar-external-warning {
+  margin-right: 4px;
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.sidebar-external-favorite .sidebar-favorite-link {
+  color: #dc3545;
+}
+
+.sidebar-external-favorite .sidebar-favorite-link:hover {
+  color: #a71d2a;
+}
+
+.sidebar-favorites-footer {
+  margin-top: 0.75rem;
+  text-align: right;
+}
+
+.sidebar-favorites-view-all {
+  font-size: 0.75rem;
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.sidebar-favorites-view-all:hover {
+  color: #0d6efd;
+  text-decoration: underline;
+}

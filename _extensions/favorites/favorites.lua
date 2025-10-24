@@ -19,6 +19,17 @@ function json_encode(val)
   end
 end
 
+-- Read the sidebar template
+function read_file(path)
+  local file = io.open(path, "r")
+  if file then
+    local content = file:read("*all")
+    file:close()
+    return content
+  end
+  return nil
+end
+
 -- Main filter function
 function Pandoc(doc)
   -- Only process HTML documents
@@ -42,6 +53,12 @@ function Pandoc(doc)
       title = pandoc.utils.stringify(doc.meta.title)
     end
 
+    -- Get path to favorites page
+    local favorites_page_path = "favorites.html"
+    if quarto.project and quarto.project.offset then
+      favorites_page_path = quarto.project.offset .. "favorites.html"
+    end
+
     -- Create page info as JSON
     local page_info = json_encode({title = title})
 
@@ -58,6 +75,30 @@ function Pandoc(doc)
 
     -- Add the button HTML in a valid location
     quarto.doc.include_text("before-body", button_html)
+
+    -- Add sidebar favorites (if not on the favorites page itself)
+    if not doc.meta.favorites_list then
+      -- Read in the sidebar HTML template
+      local sidebar_template_path = quarto.utils.resolve_path("favorites-sidebar.html")
+      local sidebar_html = read_file(sidebar_template_path) or ""
+
+      -- Replace the favorites page link placeholder with actual path
+      sidebar_html = sidebar_html:gsub("{%$favorites_page_link%$}", favorites_page_path)
+
+      -- Add the sidebar HTML to the right sidebar
+      quarto.doc.include_text("after-body", [[
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            // Find the sidebar
+            const rightSidebar = document.querySelector(".sidebar.sidebar-navigation.rollup.show");
+            if (rightSidebar) {
+              // Insert the favorites section into the sidebar
+              rightSidebar.insertAdjacentHTML("beforeend", `]] .. sidebar_html .. [[`);
+            }
+          });
+        </script>
+      ]])
+    end
 
     -- If this is a favorites list page, add the favorites list HTML with export/import functionality
     if doc.meta.favorites_list then

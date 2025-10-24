@@ -77,6 +77,9 @@ function initFavorites() {
   // Populate the favorites list if on the favorites page
   populateFavoritesList();
 
+  // Populate the favorites sidebar if it exists
+  populateFavoritesSidebar();
+
   // Setup export/import functionality
   setupExportImport();
 }
@@ -158,6 +161,9 @@ function toggleFavorite(pageInfo) {
 
   // Save updated favorites
   saveFavorites(favorites);
+
+  // Update sidebar if it exists
+  populateFavoritesSidebar();
 }
 
 // Get all favorites from localStorage
@@ -299,6 +305,9 @@ function removeFavorite(url) {
   if (index !== -1) {
     favorites.splice(index, 1);
     saveFavorites(favorites);
+
+    // Update sidebar if it exists
+    populateFavoritesSidebar();
   }
 }
 
@@ -463,10 +472,9 @@ function handleImport(importedFavorites) {
     }
   }
 
-  // Refresh the favorites list display
+  // Update all favorites displays
   populateFavoritesList();
-
-  // Update button on current page if it exists
+  populateFavoritesSidebar();
   updateCurrentPageButton();
 }
 
@@ -556,8 +564,9 @@ function handleDrop(e) {
     // Save the reordered favorites
     saveFavorites(favorites);
 
-    // Refresh the list
+    // Refresh all favorites displays
     populateFavoritesList();
+    populateFavoritesSidebar();
   }
 
   return false;
@@ -573,4 +582,77 @@ function handleDragEnd(e) {
   // Reset the dragged item reference
   draggedItem = null;
   dragSourceIndex = -1;
+}
+
+// Populate the favorites sidebar
+function populateFavoritesSidebar() {
+  const sidebarFavorites = document.getElementById('sidebar-favorites');
+  if (!sidebarFavorites) return;
+
+  const favorites = getFavorites();
+  const noFavoritesMessage = sidebarFavorites.querySelector('.sidebar-no-favorites');
+
+  // Clear existing favorites except for the no-favorites message
+  Array.from(sidebarFavorites.children).forEach(child => {
+    if (!child.classList.contains('sidebar-no-favorites')) {
+      sidebarFavorites.removeChild(child);
+    }
+  });
+
+  // Show/hide no favorites message
+  if (favorites.length === 0) {
+    if (noFavoritesMessage) noFavoritesMessage.style.display = 'block';
+    return;
+  } else {
+    if (noFavoritesMessage) noFavoritesMessage.style.display = 'none';
+  }
+
+  // Create a list of favorites (limited to top 5)
+  const ul = document.createElement('ul');
+  ul.className = 'sidebar-favorites-items';
+
+  // Get top 5 favorites (or all if less than 5)
+  const topFavorites = favorites.slice(0, 5);
+
+  topFavorites.forEach(favorite => {
+    const li = document.createElement('li');
+    li.className = 'sidebar-favorite-item';
+
+    const link = document.createElement('a');
+    link.href = favorite.url;
+    link.textContent = favorite.title;
+    link.className = 'sidebar-favorite-link';
+
+    // Check if the URL belongs to the current site
+    const isInternal = isUrlFromCurrentSite(favorite.url);
+    if (!isInternal) {
+      li.classList.add('sidebar-external-favorite');
+
+      // Add warning icon
+      const warningIcon = document.createElement('span');
+      warningIcon.className = 'sidebar-external-warning';
+      warningIcon.title = 'This link is from another website';
+      warningIcon.innerHTML = '⚠️';
+
+      // Insert warning icon before link text
+      link.prepend(warningIcon);
+    }
+
+    li.appendChild(link);
+    ul.appendChild(li);
+  });
+
+  sidebarFavorites.appendChild(ul);
+}
+
+// Update all favorites displays when favorites change
+function updateFavoritesDisplays() {
+  // Update main favorites list if it exists
+  populateFavoritesList();
+
+  // Update sidebar if it exists
+  populateFavoritesSidebar();
+
+  // Update button on current page if it exists
+  updateCurrentPageButton();
 }
