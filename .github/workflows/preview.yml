@@ -4,9 +4,20 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  pages: write
+  id-token: write
 
 concurrency: preview-${{ github.ref }}
 on:
+  # Allow manual triggering from the Actions tab
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch, tag or SHA to deploy'
+        required: true
+        default: 'main'
+        type: string
+  # Original PR events
   pull_request:
     types:
       - opened
@@ -20,14 +31,35 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
+        with:
+          # Use the manually specified ref when triggered via workflow_dispatch
+          ref: ${{ inputs.ref || github.ref_name }}
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-          
+
       - name: Render Quarto Project
         uses: quarto-dev/quarto-actions/render@v2
 
-      - name: Deploy preview
+      # For PR events, use PR preview action
+      - name: Deploy PR preview
+        if: github.event_name == 'pull_request'
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: _site
+
+      # For manual triggers, deploy to GitHub Pages
+      - name: Setup Pages
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: '_site'
+
+      - name: Deploy to GitHub Pages
+        if: github.event_name == 'workflow_dispatch'
+        id: deployment
+        uses: actions/deploy-pages@v2
