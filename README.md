@@ -66,6 +66,7 @@ These features allow users to:
 - Back up their favorites for safekeeping
 - Transfer favorites between different browsers or devices
 - Share their favorites with other users
+- Organize favorites in a custom order
 
 When importing, users have the option to either:
 - Merge the imported favorites with their existing ones (avoiding duplicates)
@@ -97,6 +98,14 @@ The extension consists of:
 3. A CSS file that styles the favorites button and list
 
 Since Quarto generates static websites, the favorites functionality runs entirely in the user's browser, with no server-side processing required.
+
+## Reordering Favorites
+
+Users can easily customize the order of their favorites using drag-and-drop:
+
+- Drag the handle (⋮⋮) next to any favorite to move it to a new position
+- The order is automatically saved and persists across browsing sessions
+- This allows users to organize their favorites in order of importance or by any other preferred arrangement
 
 ## License
 

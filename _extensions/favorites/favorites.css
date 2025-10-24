@@ -125,17 +125,7 @@
   margin: 0;
 }
 
-.favorites-items li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.favorites-items li:last-child {
-  border-bottom: none;
-}
+/* Override default styles - these are replaced by new styles below */
 
 .favorites-items a {
   text-decoration: none;
@@ -180,4 +170,70 @@
 
 .external-link:hover {
   color: #a71d2a; /* Darker red on hover */
+}
+
+/* Drag and drop styles */
+.draggable-item {
+  position: relative;
+  cursor: move;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  padding: 0 8px;
+  color: #adb5bd;
+  font-size: 16px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.draggable-item:hover .drag-handle {
+  opacity: 1;
+}
+
+.draggable-item.dragging {
+  opacity: 0.6;
+  background-color: #e9ecef;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.draggable-item.drag-over {
+  border-top: 2px solid #0d6efd;
+}
+
+.drag-animation {
+  transition: transform 0.2s ease;
+}
+
+.favorites-items li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.favorites-items li:last-child {
+  margin-bottom: 0;
+}
+
+.favorite-link-container {
+  flex-grow: 1;
+  padding: 0 10px;
+}
+
+.reorder-message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
 }
