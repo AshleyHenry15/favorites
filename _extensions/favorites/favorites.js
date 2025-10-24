@@ -39,6 +39,8 @@ function isUrlFromCurrentSite(url) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('Favorites extension: DOM Content loaded');
+
   // Initialize the favorites system
   initFavorites();
 
@@ -586,8 +588,12 @@ function handleDragEnd(e) {
 
 // Populate the favorites sidebar
 function populateFavoritesSidebar() {
+  console.log('Favorites extension: Populating sidebar');
   const sidebarFavorites = document.getElementById('sidebar-favorites');
-  if (!sidebarFavorites) return;
+  if (!sidebarFavorites) {
+    console.warn('Favorites extension: sidebar-favorites element not found');
+    return;
+  }
 
   const favorites = getFavorites();
   const noFavoritesMessage = sidebarFavorites.querySelector('.sidebar-no-favorites');

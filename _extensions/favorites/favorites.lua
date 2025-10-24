@@ -85,15 +85,40 @@ function Pandoc(doc)
       -- Replace the favorites page link placeholder with actual path
       sidebar_html = sidebar_html:gsub("{%$favorites_page_link%$}", favorites_page_path)
 
-      -- Add the sidebar HTML to the right sidebar
+      -- Method 1: Try to use Quarto's native margin blocks
+      quarto.doc.include_text("margin-sidebar", sidebar_html)
+
+      -- Method 2: Also inject via JavaScript as a fallback
       quarto.doc.include_text("after-body", [[
         <script>
           document.addEventListener("DOMContentLoaded", function() {
-            // Find the sidebar
-            const rightSidebar = document.querySelector(".sidebar.sidebar-navigation.rollup.show");
-            if (rightSidebar) {
-              // Insert the favorites section into the sidebar
-              rightSidebar.insertAdjacentHTML("beforeend", `]] .. sidebar_html .. [[`);
+            // Only inject if the margin-sidebar method didn't work
+            // (Check if our sidebar section is already in the DOM)
+            if (!document.querySelector(".sidebar-section")) {
+              // Find the sidebar - try different possible selectors
+              let rightSidebar = document.querySelector("#quarto-margin-sidebar");
+
+              // If not found, try alternative selectors
+              if (!rightSidebar) {
+                rightSidebar = document.querySelector(".sidebar-right");
+              }
+              if (!rightSidebar) {
+                rightSidebar = document.querySelector(".sidebar.sidebar-navigation");
+              }
+              if (!rightSidebar) {
+                rightSidebar = document.querySelector(".col-lg-2.sidebar");
+              }
+              if (!rightSidebar) {
+                rightSidebar = document.querySelector("[role='complementary']");
+              }
+
+              if (rightSidebar) {
+                console.log("Found sidebar, inserting favorites");
+                // Insert the favorites section into the sidebar
+                rightSidebar.insertAdjacentHTML("beforeend", `]] .. sidebar_html .. [[`);
+              } else {
+                console.warn("Could not find sidebar to insert favorites");
+              }
             }
           });
         </script>

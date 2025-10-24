@@ -243,6 +243,12 @@
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid #dee2e6;
+  margin-bottom: 1.5rem; /* Add space at bottom */
+}
+
+/* Ensure compatibility with Quarto margin blocks */
+.margin-sidebar .sidebar-section {
+  margin-top: 2rem;
 }
 
 .sidebar-title {
