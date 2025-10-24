@@ -61,8 +61,6 @@
 
 /* Navbar icon styling moved to styles.css */
 
-/* Text element removed, using title attribute for tooltip instead */
-
 /* Favorites List */
 .favorites-list-container {
   margin: 20px 0;
