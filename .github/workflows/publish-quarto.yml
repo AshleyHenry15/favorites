@@ -3,19 +3,17 @@ name: Publish Quarto Site
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
-  pull-requests: write # Added for PR comments
 
-# Allow one concurrent deployment
+# Allow only one concurrent deployment
 concurrency:
-  group: "pages-${{ github.event.pull_request.number || github.ref }}"
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
@@ -23,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Install Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -39,12 +37,11 @@ jobs:
           quarto render
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v1
         with:
           path: _site
 
-  deploy-main:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+  deploy:
     needs: build
     environment:
       name: github-pages
@@ -53,39 +50,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
-
-  deploy-preview:
-    if: github.event_name == 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      deployments: write
-    steps:
-      - name: Deploy PR Preview
-        uses: rossjrw/pr-preview-action@v1
-        with:
-          source-dir: ./_site/
-          preview-branch: gh-pages
-          umbrella-dir: pr-preview
-          action: auto
-
-      - name: Find Comment
-        uses: peter-evans/find-comment@v2
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: 'Preview deployed'
-
-      - name: Create or update comment
-        uses: peter-evans/create-or-update-comment@v2
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            📝 Preview deployed to: https://ashleyhenry15.github.io/favorites/pr-preview/pr-${{ github.event.pull_request.number }}/
-
-            Changes from this PR can be previewed at the link above. This comment will be updated automatically when new changes are pushed.
-          edit-mode: replace
+        uses: actions/deploy-pages@v1
