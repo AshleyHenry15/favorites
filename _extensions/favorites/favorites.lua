@@ -209,7 +209,7 @@ function Pandoc(doc)
           </div>
           <div id="favorites-list">
             <!-- Favorites will be dynamically inserted here by JavaScript -->
-            <p class="no-favorites-message">No favorites yet. Browse the site and click the heart icon to add pages to your favorites.</p>
+            <p class="no-favorites-message">No favorites yet.</p>
           </div>
         </div>
       ]]
