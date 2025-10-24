@@ -2,21 +2,6 @@
 
 A Quarto extension that allows users to "favorite" pages in a Quarto website. Favorites are saved to the browser's localStorage and persist across sessions.
 
-[![Deploy to GitHub Pages](https://github.com/AshleyHenry15/favorites/actions/workflows/deploy.yml/badge.svg)](https://github.com/AshleyHenry15/favorites/actions/workflows/deploy.yml)
-
-## Live Demo
-
-Try out the extension with our [live demo](https://ashleyhenry15.github.io/favorites/)!
-
-### Preview Deployments
-
-This repository includes automatic preview deployments:
-
-- **Main branch**:
-  - Official release: [https://ashleyhenry15.github.io/favorites/](https://ashleyhenry15.github.io/favorites/)
-  - Latest preview: [https://ashleyhenry15.github.io/favorites/preview/](https://ashleyhenry15.github.io/favorites/preview/)
-- **Pull Requests**: Each PR gets its own preview deployment at `https://ashleyhenry15.github.io/favorites/pr-preview/pr-{number}/`
-
 ## Installation
 
 You can install this extension in your Quarto project by using the following command:
