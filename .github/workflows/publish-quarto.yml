@@ -6,8 +6,6 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
-    # Allows manual triggering of the workflow from GitHub Actions tab
-    description: 'Manually trigger a build and deploy of the site'
 
 permissions:
   contents: read
@@ -55,7 +53,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v2
 
   deploy-preview:
     if: github.event_name == 'pull_request'
@@ -63,51 +61,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-      contents: write
+      deployments: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Deploy PR Preview
+        uses: rossjrw/pr-preview-action@v1
         with:
-          ref: gh-pages
-          fetch-depth: 0
-
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: github-pages
-          path: pr-preview-temp
-
-      - name: Set up preview directory
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          PR_DIR="pr-preview/pr-${PR_NUMBER}"
-
-          # Remove previous preview for this PR if it exists
-          rm -rf "${PR_DIR}" || true
-
-          # Create directory structure
-          mkdir -p "${PR_DIR}"
-
-          # Extract artifact
-          tar -xf pr-preview-temp/artifact.tar -C "${PR_DIR}"
-
-          # Remove temporary directory
-          rm -rf pr-preview-temp
-
-      - name: Commit changes
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          PR_DIR="pr-preview/pr-${PR_NUMBER}"
-
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-          git add "${PR_DIR}"
-
-          # Commit only if there are changes
-          git diff --staged --quiet || git commit -m "Update PR preview for PR #${PR_NUMBER}"
-
-          git push
+          source-dir: ./_site/
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          action: auto
 
       - name: Find Comment
         uses: peter-evans/find-comment@v2
