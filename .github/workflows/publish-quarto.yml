@@ -1,0 +1,129 @@
+name: Publish Quarto Site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    # Allows manual triggering of the workflow from GitHub Actions tab
+    description: 'Manually trigger a build and deploy of the site'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  pull-requests: write # Added for PR comments
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages-${{ github.event.pull_request.number || github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.4.545
+
+      - name: Install Extensions
+        run: |
+          quarto add --no-prompt AshleyHenry15/favorites
+
+      - name: Render Quarto Site
+        run: |
+          quarto render
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: _site
+
+  deploy-main:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  deploy-preview:
+    if: github.event_name == 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: pr-preview-temp
+
+      - name: Set up preview directory
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          PR_DIR="pr-preview/pr-${PR_NUMBER}"
+
+          # Remove previous preview for this PR if it exists
+          rm -rf "${PR_DIR}" || true
+
+          # Create directory structure
+          mkdir -p "${PR_DIR}"
+
+          # Extract artifact
+          tar -xf pr-preview-temp/artifact.tar -C "${PR_DIR}"
+
+          # Remove temporary directory
+          rm -rf pr-preview-temp
+
+      - name: Commit changes
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          PR_DIR="pr-preview/pr-${PR_NUMBER}"
+
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git add "${PR_DIR}"
+
+          # Commit only if there are changes
+          git diff --staged --quiet || git commit -m "Update PR preview for PR #${PR_NUMBER}"
+
+          git push
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'Preview deployed'
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            📝 Preview deployed to: https://ashleyhenry15.github.io/favorites/pr-preview/pr-${{ github.event.pull_request.number }}/
+
+            Changes from this PR can be previewed at the link above. This comment will be updated automatically when new changes are pushed.
+          edit-mode: replace
