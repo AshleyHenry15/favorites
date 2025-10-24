@@ -137,53 +137,6 @@ ul.task-list li input[type="checkbox"] {
           </button>
         </div>
       
-        <div class="favorites-list-container">
-          <div class="favorites-header">
-            <h2 class="anchored">My Favorites</h2>
-            <div class="favorites-actions">
-              <button id="add-section-divider" class="favorites-action-button" title="Add a section divider">
-                <svg viewbox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
-                  <line x1="8" y1="12" x2="16" y2="12"></line>
-                  <line x1="12" y1="8" x2="12" y2="16"></line>
-                </svg>
-                <span>Add Section</span>
-              </button>
-              <button id="export-favorites" class="favorites-action-button" title="Export your favorites as a file">
-                <svg viewbox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="7 10 12 15 17 10"></polyline>
-                  <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                <span>Export</span>
-              </button>
-              <label id="import-favorites-label" class="favorites-action-button" title="Import favorites from a file">
-                <svg viewbox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-                <span>Import</span>
-                <input type="file" id="import-favorites" accept=".json" style="display: none;">
-              </label>
-            </div>
-          </div>
-          <div id="favorites-list">
-            <!-- Favorites will be dynamically inserted here by JavaScript -->
-            <p class="no-favorites-message">No favorites yet.</p>
-          </div>
-          <div class="favorites-help">
-            <h3 class="anchored">Organizing Your Favorites</h3>
-            <p>Click the <strong>Add Section</strong> button to create section dividers that help organize your favorites.</p>
-            <ul>
-              <li>Section dividers can be dragged to any position in your list</li>
-              <li>Drag and drop your favorites between sections to organize them</li>
-              <li>Click the edit (✎) button to rename a section</li>
-              <li>Click the × button to remove a section</li>
-            </ul>
-            <p><strong>Note:</strong> The sidebar favorites panel displays up to 5 of your most recent favorites. Section dividers appear only on this full favorites page.</p>
-          </div>
-        </div>
-      
 
 
 
@@ -596,6 +549,114 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            console.log("Favorites extension: Looking for sidebar");
+
+            // Function to insert the sidebar and populate it
+            function insertAndPopulateSidebar() {
+              // Find the sidebar using Quarto's margin sidebar ID
+              let rightSidebar = document.querySelector("#quarto-margin-sidebar");
+
+              // Try alternative selectors if the first one fails
+              if (!rightSidebar) {
+                console.log("Trying alternative selectors");
+                const possibleSelectors = [
+                  ".sidebar-right",
+                  ".sidebar-navigation",
+                  ".sidebar-menu",
+                  ".sidebar.sidebar-navigation",
+                  ".col-lg-2.sidebar",
+                  "[role='complementary']",
+                  "#TOC"
+                ];
+
+                for (const selector of possibleSelectors) {
+                  const element = document.querySelector(selector);
+                  if (element) {
+                    console.log("Found sidebar with selector:", selector);
+                    rightSidebar = element;
+                    break;
+                  }
+                }
+              }
+
+              if (rightSidebar) {
+                console.log("Inserting favorites into sidebar");
+                // Only insert if not already present
+                if (!document.getElementById("sidebar-favorites")) {
+                  // Insert the favorites section into the sidebar
+                  rightSidebar.insertAdjacentHTML("beforeend", `<div class="sidebar-section">
+  <div id="sidebar-favorites-header" class="sidebar-header collapsed" role="button" aria-expanded="false" tabindex="0" title="Click to expand or collapse">
+    <h2 class="sidebar-title">My Favorites</h2>
+    <span class="sidebar-toggle-icon">▼</span>
+  </div>
+  <div id="sidebar-favorites-content" class="sidebar-favorites-content collapsed">
+    <div id="sidebar-favorites" class="sidebar-favorites">
+      <!-- Favorites will be dynamically inserted here by JavaScript -->
+      <div class="sidebar-no-favorites">No favorites yet.</div>
+    </div>
+    <div class="sidebar-favorites-footer">
+      <a href="favorites.html" class="sidebar-favorites-view-all">→ View All Favorites</a>
+    </div>
+  </div>
+</div>`);
+
+                  // Now call the functions to set up the sidebar
+                  // Wait a tiny bit to ensure the DOM has updated
+                  setTimeout(function() {
+                    // Set up toggle functionality first
+                    if (typeof setupFavoritesSidebarToggle === 'function') {
+                      console.log("Setting up favorites sidebar toggle");
+                      setupFavoritesSidebarToggle();
+                    } else {
+                      console.warn("setupFavoritesSidebarToggle function not available yet");
+                    }
+
+                    // Then populate with favorites
+                    if (typeof populateFavoritesSidebar === 'function') {
+                      console.log("Calling populateFavoritesSidebar");
+                      populateFavoritesSidebar();
+                    } else {
+                      console.warn("populateFavoritesSidebar function not available yet");
+                    }
+                  }, 100);
+                }
+              } else {
+                console.warn("Could not find sidebar to insert favorites");
+              }
+            }
+
+            // Try immediately and also with a delay to ensure Quarto has built the sidebar
+            insertAndPopulateSidebar();
+
+            // Also try again after a delay in case the sidebar isn't ready yet
+            setTimeout(insertAndPopulateSidebar, 500);
+
+            // And one more time for good measure (some themes load slowly)
+            setTimeout(insertAndPopulateSidebar, 1000);
+
+            // Handle page show events (back/forward navigation) to ensure sidebar is populated
+            window.addEventListener("pageshow", function() {
+              console.log("Page show event - repopulating sidebar");
+              setTimeout(function() {
+                if (document.getElementById("sidebar-favorites-header") &&
+                   document.getElementById("sidebar-favorites-content")) {
+                  // Set up toggle functionality first
+                  if (typeof setupFavoritesSidebarToggle === 'function') {
+                    setupFavoritesSidebarToggle();
+                  }
+
+                  // Then populate with favorites
+                  if (typeof populateFavoritesSidebar === 'function') {
+                    populateFavoritesSidebar();
+                  }
+                }
+              }, 100);
+            });
+          });
+        </script>
+      
 
 
 
