@@ -122,6 +122,9 @@ function initFavorites() {
 
   // Setup export/import functionality
   setupExportImport();
+
+  // Setup section divider functionality
+  setupSectionDividers();
 }
 
 // Check if storage is available
@@ -272,73 +275,140 @@ function populateFavoritesList() {
   ul.setAttribute('data-draggable-list', true);
 
   favorites.forEach((favorite, index) => {
-    const li = document.createElement('li');
+    // Check if this is a section divider
+    if (favorite.type === 'divider') {
+      // Create a section divider element
+      const divider = document.createElement('div');
+      divider.className = 'section-divider';
+      divider.setAttribute('draggable', true);
+      divider.setAttribute('data-index', index);
 
-    // Set drag attributes
-    li.setAttribute('draggable', true);
-    li.setAttribute('data-index', index);
-    li.classList.add('draggable-item');
+      // Add drag handle
+      const dragHandle = document.createElement('div');
+      dragHandle.className = 'section-divider-handle';
+      dragHandle.innerHTML = '⋮⋮';
+      dragHandle.title = 'Drag to reorder';
 
-    // Add drag handle
-    const dragHandle = document.createElement('div');
-    dragHandle.className = 'drag-handle';
-    dragHandle.innerHTML = '⋮⋮';
-    dragHandle.title = 'Drag to reorder';
+      // Add section title
+      const titleEl = document.createElement('div');
+      titleEl.className = 'section-divider-title';
+      titleEl.textContent = favorite.title;
 
-    const link = document.createElement('a');
-    link.href = favorite.url;
-    link.textContent = favorite.title;
+      // Add edit button
+      const editBtn = document.createElement('button');
+      editBtn.className = 'section-divider-edit';
+      editBtn.innerHTML = '✎';
+      editBtn.title = 'Edit section name';
+      editBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        editSectionDivider(index);
+      });
 
-    // Wrap link in a container for better layout control
-    const linkContainer = document.createElement('div');
-    linkContainer.className = 'favorite-link-container';
+      // Add remove button
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-favorite';
+      removeBtn.innerHTML = '&times;';
+      removeBtn.title = 'Remove section';
+      removeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
 
-    // Check if the URL belongs to the current site
-    const isInternal = isUrlFromCurrentSite(favorite.url);
-    if (!isInternal) {
-      li.classList.add('external-favorite');
+        // Remove section from favorites
+        const favorites = getFavorites();
+        favorites.splice(index, 1);
+        saveFavorites(favorites);
 
-      // Add warning icon
-      const warningIcon = document.createElement('span');
-      warningIcon.className = 'external-warning';
-      warningIcon.title = 'This link is from another website and may not work in this context';
-      warningIcon.innerHTML = '⚠️';
+        // Refresh the display
+        populateFavoritesList();
+      });
 
-      // Insert warning icon before link text
-      link.prepend(warningIcon);
-      link.classList.add('external-link');
-    }
+      // Add event listeners for drag and drop
+      divider.addEventListener('dragstart', handleDragStart);
+      divider.addEventListener('dragover', handleDragOver);
+      divider.addEventListener('dragenter', handleDragEnter);
+      divider.addEventListener('dragleave', handleDragLeave);
+      divider.addEventListener('drop', handleDrop);
+      divider.addEventListener('dragend', handleDragEnd);
 
-    linkContainer.appendChild(link);
+      // Assemble the divider
+      divider.appendChild(dragHandle);
+      divider.appendChild(titleEl);
+      divider.appendChild(editBtn);
+      divider.appendChild(removeBtn);
 
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'remove-favorite';
-    removeBtn.innerHTML = '&times;';
-    removeBtn.title = 'Remove from favorites';
-    removeBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      removeFavorite(favorite.url);
-      li.remove();
+      // Add to list
+      ul.appendChild(divider);
+    } else {
+      // Regular favorite item
+      const li = document.createElement('li');
 
-      // If no favorites left, show the message
-      if (getFavorites().length === 0) {
-        if (noFavoritesMessage) noFavoritesMessage.style.display = 'block';
+      // Set drag attributes
+      li.setAttribute('draggable', true);
+      li.setAttribute('data-index', index);
+      li.classList.add('draggable-item');
+
+      // Add drag handle
+      const dragHandle = document.createElement('div');
+      dragHandle.className = 'drag-handle';
+      dragHandle.innerHTML = '⋮⋮';
+      dragHandle.title = 'Drag to reorder';
+
+      const link = document.createElement('a');
+      link.href = favorite.url;
+      link.textContent = favorite.title;
+
+      // Wrap link in a container for better layout control
+      const linkContainer = document.createElement('div');
+      linkContainer.className = 'favorite-link-container';
+
+      // Check if the URL belongs to the current site
+      const isInternal = isUrlFromCurrentSite(favorite.url);
+      if (!isInternal) {
+        li.classList.add('external-favorite');
+
+        // Add warning icon
+        const warningIcon = document.createElement('span');
+        warningIcon.className = 'external-warning';
+        warningIcon.title = 'This link is from another website and may not work in this context';
+        warningIcon.innerHTML = '⚠️';
+
+        // Insert warning icon before link text
+        link.prepend(warningIcon);
+        link.classList.add('external-link');
       }
-    });
 
-    // Add event listeners for drag and drop
-    li.addEventListener('dragstart', handleDragStart);
-    li.addEventListener('dragover', handleDragOver);
-    li.addEventListener('dragenter', handleDragEnter);
-    li.addEventListener('dragleave', handleDragLeave);
-    li.addEventListener('drop', handleDrop);
-    li.addEventListener('dragend', handleDragEnd);
+      linkContainer.appendChild(link);
 
-    li.appendChild(dragHandle);
-    li.appendChild(linkContainer);
-    li.appendChild(removeBtn);
-    ul.appendChild(li);
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-favorite';
+      removeBtn.innerHTML = '&times;';
+      removeBtn.title = 'Remove from favorites';
+      removeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        removeFavorite(favorite.url);
+        li.remove();
+
+        // If no favorites left, show the message
+        if (getFavorites().length === 0) {
+          if (noFavoritesMessage) noFavoritesMessage.style.display = 'block';
+        }
+      });
+
+      // Add event listeners for drag and drop
+      li.addEventListener('dragstart', handleDragStart);
+      li.addEventListener('dragover', handleDragOver);
+      li.addEventListener('dragenter', handleDragEnter);
+      li.addEventListener('dragleave', handleDragLeave);
+      li.addEventListener('drop', handleDrop);
+      li.addEventListener('dragend', handleDragEnd);
+
+      li.appendChild(dragHandle);
+      li.appendChild(linkContainer);
+      li.appendChild(removeBtn);
+      ul.appendChild(li);
+    }
   });
 
   favoritesList.appendChild(ul);
@@ -458,17 +528,32 @@ function handleImport(importedFavorites) {
   // Check for favorites that don't match the current site
   const externalLinks = [];
   const internalLinks = [];
+  const sectionDividers = [];
+
   importedFavorites.forEach(fav => {
-    if (isUrlFromCurrentSite(fav.url)) {
+    // Identify section dividers
+    if (fav.type === 'divider') {
+      sectionDividers.push(fav);
+    }
+    // For regular favorites, check if they're internal or external
+    else if (isUrlFromCurrentSite(fav.url)) {
       internalLinks.push(fav);
     } else {
       externalLinks.push(fav);
     }
   });
 
-  // If all links are external, warn the user
+  const totalItems = importedFavorites.length;
+  const itemsWithoutDividers = totalItems - sectionDividers.length;
+
+  // If all links are external (and no internal links), warn the user
   if (internalLinks.length === 0 && externalLinks.length > 0) {
-    alert(`Warning: None of the ${externalLinks.length} imported favorites match pages on this site. These favorites may be from a different website.`);
+    let message = `Warning: None of the ${externalLinks.length} imported favorites match pages on this site.`;
+    if (sectionDividers.length > 0) {
+      message += ` (${sectionDividers.length} section dividers were also found.)`;
+    }
+    message += ` These favorites may be from a different website.`;
+    alert(message);
 
     // Ask if they still want to import them
     if (!confirm('Do you still want to import these external favorites? They will be marked with a warning icon in your favorites list.')) {
@@ -477,7 +562,16 @@ function handleImport(importedFavorites) {
   }
   // If there's a mix of internal and external links
   else if (externalLinks.length > 0) {
-    alert(`Note: ${externalLinks.length} out of ${importedFavorites.length} imported favorites appear to be from other websites and may not work on this site. External links will be marked with a warning icon in your favorites list.`);
+    let message = `Note: ${externalLinks.length} out of ${itemsWithoutDividers} imported favorites appear to be from other websites`;
+    message += ` and may not work on this site. External links will be marked with a warning icon in your favorites list.`;
+    if (sectionDividers.length > 0) {
+      message += ` (${sectionDividers.length} section dividers were also imported.)`;
+    }
+    alert(message);
+  }
+  // If there are only internal links and section dividers
+  else if (sectionDividers.length > 0) {
+    // No need for a warning, just proceed
   }
 
   const currentFavorites = getFavorites();
@@ -499,33 +593,73 @@ function handleImport(importedFavorites) {
 
       saveFavorites(mergedFavorites);
 
-      // Show appropriate success message based on internal vs external links
+      // Show appropriate success message
+      let message = `Successfully merged ${importedFavorites.length} items`;
+      message += ` (${mergedFavorites.length - currentFavorites.length} new added`;
+
       if (externalLinks.length > 0) {
-        alert(`Successfully merged ${importedFavorites.length} favorites (${mergedFavorites.length - currentFavorites.length} new added, ${externalLinks.length} from external sites).`);
-      } else {
-        alert(`Successfully merged ${importedFavorites.length} favorites (${mergedFavorites.length - currentFavorites.length} new added).`);
+        message += `, ${externalLinks.length} from external sites`;
       }
+
+      if (sectionDividers.length > 0) {
+        message += `, ${sectionDividers.length} section dividers`;
+      }
+
+      message += ").";
+      alert(message);
     } else {
       // Replace all favorites
       saveFavorites(importedFavorites);
 
-      // Show appropriate success message based on internal vs external links
-      if (externalLinks.length > 0) {
-        alert(`Replaced all favorites with ${importedFavorites.length} imported favorites (${externalLinks.length} from external sites).`);
-      } else {
-        alert(`Replaced all favorites with ${importedFavorites.length} imported favorites.`);
+      // Show appropriate success message
+      let message = `Replaced all favorites with ${importedFavorites.length} imported items`;
+
+      if (externalLinks.length > 0 || sectionDividers.length > 0) {
+        message += " (";
+
+        if (externalLinks.length > 0) {
+          message += `${externalLinks.length} from external sites`;
+          if (sectionDividers.length > 0) {
+            message += ", ";
+          }
+        }
+
+        if (sectionDividers.length > 0) {
+          message += `${sectionDividers.length} section dividers`;
+        }
+
+        message += ")";
       }
+
+      message += ".";
+      alert(message);
     }
   } else {
     // No current favorites, just save the imported ones
     saveFavorites(importedFavorites);
 
-    // Show appropriate success message based on internal vs external links
-    if (externalLinks.length > 0) {
-      alert(`Successfully imported ${importedFavorites.length} favorites (${externalLinks.length} from external sites).`);
-    } else {
-      alert(`Successfully imported ${importedFavorites.length} favorites.`);
+    // Show appropriate success message
+    let message = `Successfully imported ${importedFavorites.length} items`;
+
+    if (externalLinks.length > 0 || sectionDividers.length > 0) {
+      message += " (";
+
+      if (externalLinks.length > 0) {
+        message += `${externalLinks.length} from external sites`;
+        if (sectionDividers.length > 0) {
+          message += ", ";
+        }
+      }
+
+      if (sectionDividers.length > 0) {
+        message += `${sectionDividers.length} section dividers`;
+      }
+
+      message += ")";
     }
+
+    message += ".";
+    alert(message);
   }
 
   // Update all favorites displays
@@ -676,8 +810,13 @@ function populateFavoritesSidebar() {
   const ul = document.createElement('ul');
   ul.className = 'sidebar-favorites-items';
 
-  // Get top 5 favorites (or all if less than 5)
-  const topFavorites = favorites.slice(0, 5);
+  // Filter out sections and get regular favorites for sidebar
+  const regularFavorites = favorites.filter(fav => fav.type !== 'divider');
+
+  // Get top 5 regular favorites (or all if less than 5)
+  // This is the limit of favorites shown in the sidebar
+  const SIDEBAR_FAVORITES_LIMIT = 5;
+  const topFavorites = regularFavorites.slice(0, SIDEBAR_FAVORITES_LIMIT);
   console.log(`Favorites extension: Displaying top ${topFavorites.length} favorites in sidebar`);
 
   topFavorites.forEach((favorite, index) => {
@@ -784,6 +923,55 @@ function setupFavoritesSidebarToggle() {
       headerElement.click();
     }
   });
+}
+
+// Setup section dividers functionality
+function setupSectionDividers() {
+  const addSectionButton = document.getElementById('add-section-divider');
+  if (addSectionButton) {
+    addSectionButton.addEventListener('click', addNewSectionDivider);
+  }
+}
+
+// Add a new section divider
+function addNewSectionDivider() {
+  // Prompt for section name
+  const sectionName = prompt('Enter a name for this section:', '');
+  if (sectionName === null || sectionName.trim() === '') return; // User cancelled or entered empty string
+
+  // Create a new section divider object
+  const sectionDivider = {
+    type: 'divider',
+    title: sectionName.trim(),
+    dateAdded: new Date().toISOString()
+  };
+
+  // Add to favorites list
+  const favorites = getFavorites();
+  favorites.push(sectionDivider);
+
+  // Save updated favorites
+  saveFavorites(favorites);
+
+  // Refresh the favorites display
+  populateFavoritesList();
+}
+
+// Edit a section divider title
+function editSectionDivider(index) {
+  const favorites = getFavorites();
+  const divider = favorites[index];
+
+  // Prompt for new section name
+  const newName = prompt('Edit section name:', divider.title);
+  if (newName === null || newName.trim() === '') return; // User cancelled or entered empty string
+
+  // Update the divider title
+  divider.title = newName.trim();
+  saveFavorites(favorites);
+
+  // Refresh the favorites display
+  populateFavoritesList();
 }
 
 // Update all favorites displays when favorites change

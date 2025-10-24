@@ -206,6 +206,13 @@ function Pandoc(doc)
           <div class="favorites-header">
             <h2>My Favorites</h2>
             <div class="favorites-actions">
+              <button id="add-section-divider" class="favorites-action-button" title="Add a section divider">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                </svg>
+                <span>Add Section</span>
+              </button>
               <button id="export-favorites" class="favorites-action-button" title="Export your favorites as a file">
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -228,6 +235,17 @@ function Pandoc(doc)
           <div id="favorites-list">
             <!-- Favorites will be dynamically inserted here by JavaScript -->
             <p class="no-favorites-message">No favorites yet.</p>
+          </div>
+          <div class="favorites-help">
+            <h3>Organizing Your Favorites</h3>
+            <p>Click the <strong>Add Section</strong> button to create section dividers that help organize your favorites.</p>
+            <ul>
+              <li>Section dividers can be dragged to any position in your list</li>
+              <li>Drag and drop your favorites between sections to organize them</li>
+              <li>Click the edit (✎) button to rename a section</li>
+              <li>Click the &times; button to remove a section</li>
+            </ul>
+            <p><strong>Note:</strong> The sidebar favorites panel displays up to 5 of your most recent favorites. Section dividers appear only on this full favorites page.</p>
           </div>
         </div>
       ]]
