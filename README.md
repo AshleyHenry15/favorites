@@ -48,7 +48,7 @@ The `favorites_list: true` parameter tells the extension to display the favorite
 
 In the `_quarto.yml` add:
 
-``yaml
+```yaml
       - icon: heart-fill
         href: favorites.qmd
         text: " "
