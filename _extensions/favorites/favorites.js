@@ -117,6 +117,9 @@ function initFavorites() {
   // Populate the favorites sidebar if it exists
   populateFavoritesSidebar();
 
+  // Setup the favorites sidebar toggle functionality
+  setupFavoritesSidebarToggle();
+
   // Setup export/import functionality
   setupExportImport();
 }
@@ -713,6 +716,75 @@ function populateFavoritesSidebar() {
 // Export the populateFavoritesSidebar function to global scope
 // This ensures it's available for direct calling from injected scripts
 window.populateFavoritesSidebar = populateFavoritesSidebar;
+
+// Set up the favorites sidebar toggle functionality
+function setupFavoritesSidebarToggle() {
+  console.log('Setting up favorites sidebar toggle');
+  const headerElement = document.getElementById('sidebar-favorites-header');
+  const contentElement = document.getElementById('sidebar-favorites-content');
+  const toggleIcon = headerElement ? headerElement.querySelector('.sidebar-toggle-icon') : null;
+
+  if (!headerElement || !contentElement) {
+    console.log('Header or content element not found yet');
+    // Try again later if the elements aren't found
+    setTimeout(setupFavoritesSidebarToggle, 500);
+    return;
+  }
+
+  // Check if there's a saved preference, default to collapsed if not set
+  const savedPreference = localStorage.getItem('quarto-favorites-collapsed');
+  // If no preference has been saved yet, default to collapsed
+  const isCollapsed = savedPreference === null ? true : savedPreference === 'true';
+  console.log('Initial collapsed state:', isCollapsed);
+
+  // If this is the first time loading, save the default preference
+  if (savedPreference === null) {
+    localStorage.setItem('quarto-favorites-collapsed', 'true');
+  }
+
+  // Set initial state
+  if (isCollapsed) {
+    contentElement.classList.add('collapsed');
+    headerElement.classList.add('collapsed');
+    headerElement.setAttribute('aria-expanded', 'false');
+    contentElement.style.maxHeight = '0px';
+  } else {
+    contentElement.classList.remove('collapsed');
+    headerElement.classList.remove('collapsed');
+    headerElement.setAttribute('aria-expanded', 'true');
+    contentElement.style.maxHeight = '500px'; // Should be enough for most cases
+  }
+
+  // Add click event listener to the entire header
+  headerElement.addEventListener('click', function() {
+    const isCurrentlyCollapsed = contentElement.classList.contains('collapsed');
+    console.log('Header clicked, current state:', isCurrentlyCollapsed);
+
+    // Toggle collapse state
+    if (isCurrentlyCollapsed) {
+      contentElement.classList.remove('collapsed');
+      headerElement.classList.remove('collapsed');
+      headerElement.setAttribute('aria-expanded', 'true');
+      contentElement.style.maxHeight = '500px'; // Should be enough for most cases
+      localStorage.setItem('quarto-favorites-collapsed', 'false');
+    } else {
+      contentElement.classList.add('collapsed');
+      headerElement.classList.add('collapsed');
+      headerElement.setAttribute('aria-expanded', 'false');
+      contentElement.style.maxHeight = '0px';
+      localStorage.setItem('quarto-favorites-collapsed', 'true');
+    }
+  });
+
+  // Add keyboard support for accessibility
+  headerElement.addEventListener('keydown', function(e) {
+    // Toggle on Enter or Space
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      headerElement.click();
+    }
+  });
+}
 
 // Update all favorites displays when favorites change
 function updateFavoritesDisplays() {

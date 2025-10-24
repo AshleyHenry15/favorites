@@ -142,16 +142,25 @@ function Pandoc(doc)
                   // Insert the favorites section into the sidebar
                   rightSidebar.insertAdjacentHTML("beforeend", `]] .. sidebar_html .. [[`);
 
-                  // Now call the function to populate the sidebar favorites
+                  // Now call the functions to set up the sidebar
                   // Wait a tiny bit to ensure the DOM has updated
                   setTimeout(function() {
+                    // Set up toggle functionality first
+                    if (typeof setupFavoritesSidebarToggle === 'function') {
+                      console.log("Setting up favorites sidebar toggle");
+                      setupFavoritesSidebarToggle();
+                    } else {
+                      console.warn("setupFavoritesSidebarToggle function not available yet");
+                    }
+
+                    // Then populate with favorites
                     if (typeof populateFavoritesSidebar === 'function') {
                       console.log("Calling populateFavoritesSidebar");
                       populateFavoritesSidebar();
                     } else {
                       console.warn("populateFavoritesSidebar function not available yet");
                     }
-                  }, 50);
+                  }, 100);
                 }
               } else {
                 console.warn("Could not find sidebar to insert favorites");
@@ -171,8 +180,17 @@ function Pandoc(doc)
             window.addEventListener("pageshow", function() {
               console.log("Page show event - repopulating sidebar");
               setTimeout(function() {
-                if (typeof populateFavoritesSidebar === 'function' && document.getElementById("sidebar-favorites")) {
-                  populateFavoritesSidebar();
+                if (document.getElementById("sidebar-favorites-header") &&
+                   document.getElementById("sidebar-favorites-content")) {
+                  // Set up toggle functionality first
+                  if (typeof setupFavoritesSidebarToggle === 'function') {
+                    setupFavoritesSidebarToggle();
+                  }
+
+                  // Then populate with favorites
+                  if (typeof populateFavoritesSidebar === 'function') {
+                    populateFavoritesSidebar();
+                  }
                 }
               }, 100);
             });

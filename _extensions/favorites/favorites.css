@@ -252,13 +252,54 @@
   margin-top: 2rem;
 }
 
+/* Sidebar Header with toggle */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.sidebar-header:hover .sidebar-title,
+.sidebar-header:hover .sidebar-toggle-icon {
+  color: var(--bs-link-hover-color, var(--bs-primary-dark, #0a58ca));
+}
+
 .sidebar-title {
   font-size: 0.875rem;
   font-weight: 400;
   color: #495057;
-  margin-bottom: 0.75rem;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+
+/* Toggle icon styling */
+.sidebar-toggle-icon {
+  color: #6c757d;
+  font-size: 0.75rem;
+  line-height: 1;
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.2s ease;
+}
+
+/* Collapsed state styling */
+.sidebar-favorites-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.sidebar-favorites-content.collapsed {
+  max-height: 0;
+}
+
+.sidebar-header.collapsed .sidebar-toggle-icon {
+  transform: rotate(-90deg);
 }
 
 .sidebar-favorites {
