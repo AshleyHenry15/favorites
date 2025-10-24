@@ -1,6 +1,6 @@
 # Quarto Favorites Extension
 
-A Quarto extension that allows users to "favorite" pages in a Quarto website. Favorites are saved to the browser's localStorage and persist across sessions.
+A Quarto extension that allows users to "favorite" pages in a Quarto website. Favorites are saved to the browser's localStorage and persist across sessions. The main branch is automatically deployed to GitHub Pages.
 
 ## Installation
 
