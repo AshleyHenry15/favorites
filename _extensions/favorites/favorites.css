@@ -173,7 +173,7 @@
   color: #a71d2a; /* Darker red on hover */
 }
 
-/* Drag and drop styles */
+/* Drag and drop styles on favorites page*/
 .draggable-item {
   position: relative;
   cursor: move;
