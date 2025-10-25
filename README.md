@@ -55,6 +55,8 @@ The extension automatically adds a collapsible "My Favorites" section to the sid
 In the `_quarto.yml` add:
 
 ```yaml
+website:
+  navbar:
     right:
       - text: "Favs"
         href: favorites.qmd
