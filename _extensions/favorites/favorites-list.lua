@@ -1,6 +1,9 @@
 -- favorites-list.lua
 -- This filter creates the favorites list functionality
 
+--- Load utils module
+local utils = require(quarto.utils.resolve_path('_modules/utils.lua'):gsub('%.lua$', ''))
+
 -- Function to handle metadata and check for favorites list page
 function Meta(meta)
   -- Only process if we're in HTML format
@@ -17,7 +20,7 @@ function Meta(meta)
     ]]
 
     -- Check if this is the favorites list page
-    if meta.favorites_list then
+    if utils.is_favorites_list(meta) then
       -- Insert the favorites list HTML into the document
       quarto.doc.include_text("before-body", html)
     end
