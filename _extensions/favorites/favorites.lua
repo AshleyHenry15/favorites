@@ -1,34 +1,8 @@
 -- favorites.lua
 -- This filter adds favorites functionality to Quarto websites
 
--- Simple function to create JSON string manually (no dependency on pandoc.utils.to_json)
-function json_encode(val)
-  if type(val) == "string" then
-    return '"' .. val:gsub('"', '\\"'):gsub("\n", "\\n") .. '"'
-  elseif type(val) == "table" then
-    local json = "{"
-    local first = true
-    for k, v in pairs(val) do
-      if not first then json = json .. "," end
-      first = false
-      json = json .. '"' .. k .. '":' .. json_encode(v)
-    end
-    return json .. "}"
-  else
-    return tostring(val)
-  end
-end
-
--- Read the sidebar template
-function read_file(path)
-  local file = io.open(path, "r")
-  if file then
-    local content = file:read("*all")
-    file:close()
-    return content
-  end
-  return nil
-end
+--- Load utils module
+local utils = require(quarto.utils.resolve_path('_modules/utils.lua'):gsub('%.lua$', ''))
 
 -- Main filter function
 function Pandoc(doc)
@@ -48,44 +22,16 @@ function Pandoc(doc)
     })
 
     -- Extract title from metadata
-    local title = "Untitled Page"
-    if doc.meta.title then
-      title = pandoc.utils.stringify(doc.meta.title)
-    end
+    local title = utils.get_page_title(doc.meta)
 
     -- Get path to favorites page
-    -- Ensure path is properly formatted to avoid 404 errors
-    local favorites_page_path = "favorites.html"
-    if quarto.project and quarto.project.offset then
-      local offset = quarto.project.offset
-
-      -- Remove any leading dot to avoid URL issues
-      if offset:sub(1, 1) == "." then
-        offset = offset:sub(2)
-      end
-
-      -- Ensure there's a forward slash between the offset and filename
-      if offset ~= "" and offset:sub(-1) ~= "/" then
-        offset = offset .. "/"
-      end
-
-      favorites_page_path = offset .. "favorites.html"
-    end
-
-    -- For debugging
-    -- print("Favorites page path: " .. favorites_page_path)
+    local favorites_page_path = utils.get_favorites_page_path()
 
     -- Check if this is a favorites list page
-    -- Support both extensions.favorites.favorites-list and direct favorites_list for backwards compatibility
-    local is_favorites_list = false
-    if doc.meta.extensions and doc.meta.extensions.favorites and doc.meta.extensions.favorites["favorites-list"] then
-      is_favorites_list = true
-    elseif doc.meta.favorites_list then
-      is_favorites_list = true
-    end
+    local is_favorites_list = utils.is_favorites_list(doc.meta)
 
     -- Create page info as JSON
-    local page_info = json_encode({title = title})
+    local page_info = utils.json_encode({title = title})
 
     -- Create button HTML
     local button_html = string.format([[
@@ -105,7 +51,7 @@ function Pandoc(doc)
     if not is_favorites_list then
       -- Read in the sidebar HTML template
       local sidebar_template_path = quarto.utils.resolve_path("favorites-sidebar.html")
-      local sidebar_html = read_file(sidebar_template_path) or ""
+      local sidebar_html = utils.read_file(sidebar_template_path) or ""
 
       -- Replace the favorites page link placeholder with actual path
       sidebar_html = sidebar_html:gsub("{%$favorites_page_link%$}", favorites_page_path)
