@@ -130,4 +130,5 @@ Section dividers are visual elements that help organize the favorites list witho
 
 ## License
 
-MIT License
+This project is licensed under the MIT License.
+See the [LICENSE](LICENSE) file for details.
