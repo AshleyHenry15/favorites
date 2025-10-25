@@ -33,10 +33,12 @@ Users can click on this button to add or remove the current page from their favo
 
 To create a dedicated page that displays all favorited pages, create a new Quarto document (e.g., `favorites.qmd`) with the following YAML front matter:
 
-```yaml
+```markdown
 ---
 title: "My Favorites"
-favorites_list: true
+extensions:
+  favorites:
+    favorites-list: true
 ---
 
 This page displays all your favorited pages from this website.
@@ -68,16 +70,19 @@ The favorites page includes Export and Import buttons that allow users to:
 2. **Import Favorites**: Load favorites from a previously exported JSON file
 
 These features allow users to:
+
 - Back up their favorites for safekeeping
 - Transfer favorites between different browsers or devices
 - Share their favorites with other users
 - Organize favorites in a custom order
 
 When importing, users have the option to either:
+
 - Merge the imported favorites with their existing ones (avoiding duplicates)
 - Replace all existing favorites with the imported ones
 
 The extension validates imported favorites to check if they belong to the current website:
+
 - External links (from different websites) are highlighted with warning icons
 - Users receive notifications about the number of external links in their imports
 - Users can choose whether to include external links in their favorites list
