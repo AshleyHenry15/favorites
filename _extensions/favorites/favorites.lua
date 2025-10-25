@@ -75,6 +75,15 @@ function Pandoc(doc)
     -- For debugging
     -- print("Favorites page path: " .. favorites_page_path)
 
+    -- Check if this is a favorites list page
+    -- Support both extensions.favorites.favorites-list and direct favorites_list for backwards compatibility
+    local is_favorites_list = false
+    if doc.meta.extensions and doc.meta.extensions.favorites and doc.meta.extensions.favorites["favorites-list"] then
+      is_favorites_list = true
+    elseif doc.meta.favorites_list then
+      is_favorites_list = true
+    end
+
     -- Create page info as JSON
     local page_info = json_encode({title = title})
 
@@ -93,7 +102,7 @@ function Pandoc(doc)
     quarto.doc.include_text("before-body", button_html)
 
     -- Add sidebar favorites (if not on the favorites page itself)
-    if not doc.meta.favorites_list then
+    if not is_favorites_list then
       -- Read in the sidebar HTML template
       local sidebar_template_path = quarto.utils.resolve_path("favorites-sidebar.html")
       local sidebar_html = read_file(sidebar_template_path) or ""
@@ -200,7 +209,7 @@ function Pandoc(doc)
     end
 
     -- If this is a favorites list page, add the favorites list HTML with export/import functionality
-    if doc.meta.favorites_list then
+    if is_favorites_list then
       local list_html = [[
         <div class="favorites-list-container">
           <div class="favorites-header">
