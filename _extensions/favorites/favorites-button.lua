@@ -25,7 +25,7 @@ function Meta(meta)
     local title = utils.get_page_title(meta)
 
     -- Create page info as JSON
-    local page_info = utils.json_encode({title = title})
+    local page_info = quarto.json.encode({title = title})
 
     -- Create the favorites button HTML
     local button_html = string.format([[

@@ -31,7 +31,7 @@ function Pandoc(doc)
     local is_favorites_list = utils.is_favorites_list(doc.meta)
 
     -- Create page info as JSON
-    local page_info = utils.json_encode({title = title})
+    local page_info = quarto.json.encode({title = title})
 
     -- Create button HTML
     local button_html = string.format([[

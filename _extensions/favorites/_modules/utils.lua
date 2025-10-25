@@ -3,26 +3,6 @@
 
 local utils = {}
 
---- Simple function to create JSON string manually (no dependency on pandoc.utils.to_json)
---- @param val any The value to encode
---- @return string The JSON-encoded string
-function utils.json_encode(val)
-  if type(val) == "string" then
-    return '"' .. val:gsub('"', '\\"'):gsub("\n", "\\n") .. '"'
-  elseif type(val) == "table" then
-    local json = "{"
-    local first = true
-    for k, v in pairs(val) do
-      if not first then json = json .. "," end
-      first = false
-      json = json .. '"' .. k .. '":' .. utils.json_encode(v)
-    end
-    return json .. "}"
-  else
-    return tostring(val)
-  end
-end
-
 --- Read a file from the filesystem
 --- @param path string The file path
 --- @return string|nil The file contents or nil if not found
