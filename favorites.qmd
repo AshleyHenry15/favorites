@@ -1,6 +1,8 @@
 ---
 page_title: false
-favorites_list: true
+extensions:
+  favorites:
+    favorites-list: true
 ---
 
 This page displays all your favorited pages from this website.

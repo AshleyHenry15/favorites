@@ -19,3 +19,5 @@ yarn-error.log
 *~
 **/*.quarto_ipynb
 .claude
+
+/.luarc.json
