@@ -1,5 +1,7 @@
 # Quarto Favorites Extension
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d08872a6-76af-4f8a-a438-59073875d9e9/deploy-status)](https://app.netlify.com/projects/quarto-favorites/deploys)
+
 A Quarto extension that allows users to "favorite" pages in a Quarto website. Favorites are saved to the browser's localStorage and persist across sessions. The main branch is automatically deployed to GitHub Pages.
 
 ## Installation
